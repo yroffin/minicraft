@@ -21,7 +21,7 @@
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4",
-    "three": "0.133.1"
+    "@babylonjs/core": "4.2.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.8",
@@ -36,6 +36,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "typescript": "~4.3.5",
-    "@types/three": "0.132.2"
+    "@types/babylonjs": "2.4.1"
   }
 }

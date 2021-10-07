@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, NgZone, OnInit, ViewChild } from '@angular/core';
-import * as THREE from 'three';
 import { RendererComponent } from '../render/render.component';
 
 @Component({
@@ -18,7 +17,6 @@ export class WorldComponent implements AfterViewInit {
     this.zone.runOutsideAngular(_ => {
       const animate = () => {
         requestAnimationFrame(animate);
-        this.renderer.render();
       };
       animate();
     })

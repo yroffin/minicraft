@@ -1,9 +1,5 @@
 import { AfterViewInit, Component, Input, ViewChild, ElementRef, ContentChild, OnDestroy } from '@angular/core';
-import { AbstractCamera } from 'src/app/classes/abstract-camera';
-import { SceneDirective } from 'src/app/directives/scene.directive';
-import { BoxGeometry, Color, WebGLRenderer } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-// We'll get to these in a second
+import { Engine, FreeCamera, HemisphericLight, Mesh, Scene, Vector3 } from 'babylonjs';
 
 @Component
   ({
@@ -12,33 +8,54 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
     styleUrls: ['./render.component.css']
   })
 export class RendererComponent implements AfterViewInit, OnDestroy {
-  renderer!: any;
-  orbitControls!: any;
+  engine!: Engine;
+  scene!: Scene;
 
   @ViewChild('canvas') canvasReference!: ElementRef;
   get canvas(): HTMLCanvasElement { return this.canvasReference.nativeElement; }
 
-  @ContentChild(SceneDirective) scene!: SceneDirective
-  @ContentChild(AbstractCamera) camera!: AbstractCamera<any>;
-
-  @Input() color: string | number | Color = 0xffffff;
+  @Input() color: string | number = 0xffffff;
   @Input() alpha = 0;
   @Input() rotateSpeed = 1.0;
   @Input() zoomSpeed = 1.2;
 
   ngAfterViewInit() {
-    // Fix renderer
-    this.renderer = new WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: true });
-    this.renderer.setPixelRatio(devicePixelRatio);
-    this.renderer.setClearColor(this.color, this.alpha);
-    this.renderer.autoClear = true;
-    // Set orbit control
-    this.orbitControls = new OrbitControls(this.camera.object, this.canvas);
-    this.orbitControls.rotateSpeed = this.rotateSpeed;
-    this.orbitControls.zoomSpeed = this.zoomSpeed;
+    // Load the 3D engine
+    this.engine = new Engine(this.canvas, true, { preserveDrawingBuffer: true, stencil: true });
+    this.scene = this.createScene();
+
+    // run the render loop
+    this.engine.runRenderLoop(() => {
+      this.scene.render();
+    });
+
+    // the canvas/window resize event handler
+    window.addEventListener('resize', () => {
+      this.engine.resize();
+    });
   }
-  render() {
-    this.renderer.render(this.scene.object, this.camera.object);
+
+  // CreateScene function that creates and return the scene
+  createScene() {
+    // Create a basic BJS Scene object
+    let scene = new Scene(this.engine);
+    // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
+    let camera = new FreeCamera('camera1', new Vector3(0, 5, -10), scene);
+    // Target the camera to scene origin
+    camera.setTarget(Vector3.Zero());
+    // Attach the camera to the canvas
+    camera.attachControl(this.canvas, false);
+    // Create a basic light, aiming 0, 1, 0 - meaning, to the sky
+    let light = new HemisphericLight('light1', new Vector3(0, 1, 0), scene);
+    // Create a built-in "sphere" shape; its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation
+    let sphere = Mesh.CreateSphere('sphere1', 16, 2, scene, false, Mesh.FRONTSIDE);
+    // Move the sphere upward 1/2 of its height
+    sphere.position.y = 1;
+    // Create a built-in "ground" shape; its constructor takes 6 params : name, width, height, subdivision, scene, updatable
+    let ground = Mesh.CreateGround('ground1', 6, 6, 2, scene, false);
+    // Return the created scene
+    return scene;
   }
-  ngOnDestroy() { this.orbitControls.dispose(); }
+
+  ngOnDestroy() { }
 }
