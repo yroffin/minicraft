@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, ViewChild, ElementRef, ContentChild, OnDestroy } from '@angular/core';
-import { Engine, FreeCamera, HemisphericLight, Mesh, Scene, Vector3 } from 'babylonjs';
+import { Engine, FreeCamera, HemisphericLight, Mesh, Scene, SceneLoader, Vector3 } from 'babylonjs';
 
 @Component
   ({
@@ -53,8 +53,18 @@ export class RendererComponent implements AfterViewInit, OnDestroy {
     sphere.position.y = 1;
     // Create a built-in "ground" shape; its constructor takes 6 params : name, width, height, subdivision, scene, updatable
     let ground = Mesh.CreateGround('ground1', 6, 6, 2, scene, false);
+
+    this.addItem();
+
     // Return the created scene
     return scene;
+  }
+
+  addItem() {
+    SceneLoader.ImportMesh("", "assets/models/Dude/", "Dude.babylon", this.scene, (meshes) => {
+      this.scene.createDefaultCameraOrLight(true, true, true);
+      this.scene.createDefaultEnvironment();
+    });
   }
 
   ngOnDestroy() { }

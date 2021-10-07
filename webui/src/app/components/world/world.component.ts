@@ -12,6 +12,10 @@ export class WorldComponent implements AfterViewInit {
 
   constructor(private readonly zone: NgZone) { }
 
+  onClickMe() {
+    this.renderer.addItem();
+  }
+
   ngAfterViewInit() {
     // might make a performance difference
     this.zone.runOutsideAngular(_ => {
