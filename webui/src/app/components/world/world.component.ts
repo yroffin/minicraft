@@ -13,7 +13,7 @@ export class WorldComponent implements AfterViewInit {
   constructor(private readonly zone: NgZone) { }
 
   onClickMe() {
-    this.renderer.addItem();
+    this.renderer.pinch();
   }
 
   ngAfterViewInit() {
