@@ -3,23 +3,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
+    "skipLibCheck": true,
     "types": [
       "babylonjs"
     ],
-    "paths": {
-      "path": [
-        "./node_modules/path-browserify"
-      ],
-      "fs": [
-        "./node_modules/path-browserify"
-      ],
-      "crypto": [
-        "./node_modules/crypto-browserify"
-      ],
-      "stream": [
-        "./node_modules/stream-browserify"
-      ]
-    }
+    "paths": {}
   },
   "files": [
     "src/main.ts",

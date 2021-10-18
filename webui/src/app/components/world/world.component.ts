@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { MapHelperService } from 'src/app/services/map/map-helper.service';
 import { RendererComponent } from '../render/render.component';
 
 @Component({
@@ -10,20 +11,10 @@ export class WorldComponent implements AfterViewInit {
 
   @ViewChild(RendererComponent) renderer!: RendererComponent;
 
-  constructor(private readonly zone: NgZone) { }
-
-  onClickMe() {
-    this.renderer.pinch();
+  constructor(private mapHelperService: MapHelperService) {
   }
 
   ngAfterViewInit() {
-    // might make a performance difference
-    this.zone.runOutsideAngular(_ => {
-      const animate = () => {
-        requestAnimationFrame(animate);
-      };
-      animate();
-    })
   }
 
 }

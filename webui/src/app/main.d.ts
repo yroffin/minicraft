@@ -7,3 +7,5 @@ declare var WebGLObject: {
 };
 
 declare module 'oimo';
+declare module 'cannon';
+declare module 'ammo.js';
