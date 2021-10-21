@@ -12,7 +12,7 @@ export class MapHelperService {
   engine!: Engine;
   scene!: Scene;
   camera!: ArcRotateCamera;
-  mesh!: Mesh;
+  mesh!: AbstractMesh;
 
   wireframe: boolean = false;
   type: number = 2;
@@ -40,7 +40,7 @@ export class MapHelperService {
             break;
           case 2:
             console.log(CANNON)
-            this.scene.enablePhysics(new Vector3(0, -9.81, 0));
+            this.scene.enablePhysics(new Vector3(0, -981, 0));
             this.scene.collisionsEnabled = true;
             resolve();
             break;
@@ -69,7 +69,7 @@ export class MapHelperService {
       updatable: false,
       onReady: (mesh) => {
         mesh.position.y = -1500;
-        mesh.physicsImpostor = new PhysicsImpostor(mesh, PhysicsImpostor.HeightmapImpostor, { mass: 0 }, this.scene);
+        mesh.physicsImpostor = new PhysicsImpostor(mesh, PhysicsImpostor.HeightmapImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, this.scene);
         if (this.wireframe) {
           var materialforbox = new StandardMaterial("texture1", this.scene);
           mesh.material = materialforbox;
@@ -156,7 +156,7 @@ export class MapHelperService {
 
         this.camera.setTarget(collider.getBoundingInfo().boundingSphere.center);
 
-        collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: 1, friction: 1, restitution: 1 }, this.scene);
+        collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: 5, friction: 0.5, restitution: 0.7 }, this.scene);
         collider.isVisible = false;
 
         // add each mesh to collider
@@ -164,6 +164,7 @@ export class MapHelperService {
           collider.addChild(mesh);
         })
 
+        this.mesh = meshes[0];
         resolve(collider);
       });
     });
@@ -171,11 +172,14 @@ export class MapHelperService {
 
   freeze(): Promise<void> {
     return new Promise<void>((resolve) => {
+      this.camera.setTarget(this.mesh.getBoundingInfo().boundingSphere.center);
+      resolve();
     });
   }
 
   unfreeze(): Promise<void> {
     return new Promise<void>((resolve) => {
+      resolve();
     });
   }
 }
