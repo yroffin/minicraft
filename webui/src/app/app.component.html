@@ -1,5 +1,8 @@
+<p-menubar [model]="items">
+    <input type="text" pInputText placeholder="Search">
+    <button pButton label="Logout" icon="pi pi-power-off"></button>
+</p-menubar>
 <button (click)="onClickMe()">Click me!</button>
 <button (click)="onFreezeMe()">On</button>
 <button (click)="onUnfreezeMe()">Off</button>
-<app-world-renderer></app-world-renderer>
-<router-outlet></router-outlet>
+<router-outlet (activate)='onActivate($event)'></router-outlet>

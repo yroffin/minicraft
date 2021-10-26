@@ -24,7 +24,11 @@
     "babylonjs": "preview",
     "lodash": "4.17.21",
     "oimo": "1.0.9",
-    "cannon": "0.6.2"
+    "cannon": "0.6.2",
+    "primeng": "12.2.1",
+    "primeicons": "4.1.0",
+    "pako": "2.0.4",
+    "mxgraphdata": "0.1.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.8",

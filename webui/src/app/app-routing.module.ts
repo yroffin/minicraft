@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WorldComponent } from './components/world/world.component';
+import { AnotherComponent } from './components/world/another/another.component';
+import { WorldComponent } from './components/world/default/world.component';
 
 const routes: Routes = [
   {
@@ -8,8 +9,12 @@ const routes: Routes = [
     component: WorldComponent
   },
   {
-    path: 'worlds',
+    path: 'world',
     component: WorldComponent
+  },
+  {
+    path: 'another',
+    component: AnotherComponent
   }
 ];
 
