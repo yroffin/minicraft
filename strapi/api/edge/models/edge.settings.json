@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "edges",
+  "info": {
+    "name": "Edge",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "source": {
+      "model": "node"
+    },
+    "target": {
+      "model": "node"
+    }
+  }
+}

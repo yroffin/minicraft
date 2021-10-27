@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nodes",
+  "info": {
+    "name": "Node",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "position": {
+      "type": "json",
+      "required": true
+    },
+    "size": {
+      "type": "float",
+      "required": true
+    }
+  }
+}

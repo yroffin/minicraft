@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { RendererComponent } from './components/render/render.component';
 import { IComponent } from './classes/component.interface';
 import { MapHelperService } from './services/map/map-helper.service';
+import { DataStreamService } from './services/data-stream.service';
 
 @Component({
   selector: 'app-root',
@@ -53,10 +54,12 @@ export class AppComponent implements AfterViewInit {
   title = 'webui';
   current!: RendererComponent;
 
-  constructor(private mapHelperService: MapHelperService) {
+  constructor(
+    private mapHelperService: MapHelperService,
+    private dataStreamService: DataStreamService
+  ) {
     mapHelperService.getEmiter().subscribe((msg) => {
       this.current = msg.renderer;
-      console.log(this.current);
     });
   }
 

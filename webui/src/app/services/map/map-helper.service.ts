@@ -9,6 +9,8 @@ import { mxCell } from 'mxgraphdata';
 import * as OIMO from 'oimo';
 import { Msg } from 'src/app/classes/component.interface';
 import { BrowserService } from '../browser.service';
+import { EdgeService, MapHelperEdge } from '../data/edge.service';
+import { MapHelperNode, NodeService } from '../data/node.service';
 import { LoadAssetService } from '../load-asset.service';
 
 export class MapHelperContext {
@@ -30,17 +32,6 @@ export class MapHelperGraph {
   edges: Array<MapHelperEdge> = [];
 }
 
-export class MapHelperNode {
-  name!: string;
-  size!: number;
-  position!: Vector3;
-}
-
-export class MapHelperEdge {
-  from!: string;
-  to!: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -50,7 +41,9 @@ export class MapHelperService {
 
   constructor(
     private readonly browserService: BrowserService,
-    private readonly loadAssetService: LoadAssetService
+    private readonly loadAssetService: LoadAssetService,
+    private readonly nodeService: NodeService,
+    private readonly edgeService: EdgeService
   ) {
     browserService.nativeWindow.CANNON = CANNON;
   }
@@ -120,7 +113,7 @@ export class MapHelperService {
   }
 
   loadWorld(context: MapHelperContext) {
-    return new Promise<MapHelperContext>((resolve) => {
+    return new Promise<MapHelperContext>(async (resolve) => {
       const height = MeshBuilder.CreateGroundFromHeightMap("gdhm", "assets/textures/heightMap.png", {
         width: 2500,
         height: 2500,
@@ -138,79 +131,32 @@ export class MapHelperService {
         }
       }, context.scene);
 
-      const _world: MapHelperGraph = {
-        nodes: [
-          {
-            "name": "sample001",
-            "size": 10,
-            "position": new Vector3(0, 0, 0)
-          },
-          {
-            "name": "sample002",
-            "size": 10,
-            "position": new Vector3(0, 0, 100)
-          },
-          {
-            "name": "sample003",
-            "size": 10,
-            "position": new Vector3(0, 200, 100)
+      let nodes = await this.nodeService.findAll();
+      let edges = await this.edgeService.findAll();
+
+      const world: MapHelperGraph = {
+        nodes: _.flatMap<any, MapHelperNode>(await this.nodeService.findAll(), (node) => {
+          return {
+            id: node.id,
+            name: node.name,
+            size: node.size,
+            position: node.position
           }
-        ],
-        edges: [
-          {
-            "from": "sample001",
-            "to": "sample002"
-          },
-          {
-            "from": "sample001",
-            "to": "sample003"
-          },
-          {
-            "from": "sample002",
-            "to": "sample003"
+        }),
+        edges: _.flatMap<any, MapHelperEdge>(await this.edgeService.findAll(), (edge) => {
+          return {
+            id: edge.id,
+            name: edge.name,
+            source: edge.source.id,
+            target: edge.target.id
           }
-        ]
+        }),
       }
 
-      let world = new MapHelperGraph();
-      this.loadAssetService.loadDrawIo('assets/draw.io/sample.drawio').then((graph) => {
-        let allPlaceHolder: Array<mxCell> = [];
-        _.each((<any>graph.root).object, (obj) => {
-          allPlaceHolder.push(obj);
-        });
-        console.log(allPlaceHolder);
-        _.each(_.union(graph.root.mxCell, allPlaceHolder), (cell) => {
-          console.log(cell);
-          if (!cell._style) {
-            return;
-          }
-          if (cell._edge) {
-            let edge = {
-              from: `cell_${cell._source}`.replace('-', '_'),
-              to: `cell_${cell._target}`.replace('-', '_')
-            };
-            world.edges.push(edge);
-          } else {
-            let x = 0, y = 0, width = 10;
-            if (cell.mxGeometry) {
-              x = <number>(<any>cell.mxGeometry)._x;
-              y = <number>(<any>cell.mxGeometry)._y;
-              width = <number>(<any>cell.mxGeometry)._width;
-            }
-            let node = {
-              name: `cell_${cell._id}`.replace('-', '_'),
-              size: width,
-              position: new Vector3(x, 100, -y)
-            };
-            world.nodes.push(node);
-          }
-        });
+      // Draw this graph
+      this.draw(context, world);
 
-        // Draw this graph
-        this.draw(context, world);
-
-        resolve(context);
-      });
+      resolve(context);
     });
   }
 
@@ -219,7 +165,7 @@ export class MapHelperService {
 
     // Build index
     _.each(world.nodes, (node) => {
-      eval(`index.${node.name} = node`);
+      eval(`index['${node.name}'] = node`);
     });
 
     // Put node in place
@@ -227,8 +173,9 @@ export class MapHelperService {
       let mesh = MeshBuilder.CreateSphere(node.name, {
         diameter: node.size
       });
+      mesh.id = node.id;
       // Fix position
-      let test = mesh.translate(node.position, 1, Space.WORLD);
+      mesh.translate(node.position, 1, Space.WORLD);
       mesh.setPivotPoint(mesh.getBoundingInfo().boundingBox.center);
 
       mesh.actionManager = new ActionManager(context.scene);
@@ -247,8 +194,8 @@ export class MapHelperService {
 
     // Put edge in place
     _.each(world.edges, (edge) => {
-      let from = context.scene.getMeshByName(edge.from);
-      let to = context.scene.getMeshByName(edge.to);
+      let from = context.scene.getMeshById(edge.source);
+      let to = context.scene.getMeshById(edge.target);
       if (from && to) {
         let line = MeshBuilder.CreateLines("name", {
           points: [
