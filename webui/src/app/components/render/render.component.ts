@@ -45,10 +45,6 @@ export class RendererComponent implements AfterContentInit, OnDestroy {
 
   // CreateScene function that creates and return the scene
   public pinch() {
-    this.mapHelperService.load(this.context).then((mesh) => {
-      let direction = new Vector3(0, 0, 1);
-      mesh.translate(direction, 50, Space.WORLD);
-    });
   }
 
   public freeze() {

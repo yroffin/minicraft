@@ -530,7 +530,8 @@
               "id",
               "name",
               "position",
-              "size"
+              "size",
+              "resource"
             ],
             "properties": {
               "id": {
@@ -543,6 +544,12 @@
                 "type": "object"
               },
               "size": {
+                "type": "number"
+              },
+              "resource": {
+                "type": "string"
+              },
+              "height": {
                 "type": "number"
               },
               "published_at": {
@@ -561,7 +568,8 @@
               "id",
               "name",
               "position",
-              "size"
+              "size",
+              "resource"
             ],
             "properties": {
               "id": {
@@ -574,6 +582,12 @@
                 "type": "object"
               },
               "size": {
+                "type": "number"
+              },
+              "resource": {
+                "type": "string"
+              },
+              "height": {
                 "type": "number"
               },
               "published_at": {

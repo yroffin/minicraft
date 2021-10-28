@@ -23,6 +23,19 @@
     "size": {
       "type": "float",
       "required": true
+    },
+    "resource": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "files"
+      ],
+      "plugin": "upload",
+      "required": true,
+      "pluginOptions": {}
+    },
+    "height": {
+      "type": "float"
     }
   }
 }

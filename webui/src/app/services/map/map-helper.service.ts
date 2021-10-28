@@ -140,7 +140,9 @@ export class MapHelperService {
             id: node.id,
             name: node.name,
             size: node.size,
-            position: node.position
+            position: node.position,
+            resource: node.resource,
+            weight: node.weight
           }
         }),
         edges: _.flatMap<any, MapHelperEdge>(await this.edgeService.findAll(), (edge) => {
@@ -170,26 +172,20 @@ export class MapHelperService {
 
     // Put node in place
     _.each(world.nodes, (node) => {
-      let mesh = MeshBuilder.CreateSphere(node.name, {
-        diameter: node.size
+      this.load(context, node).then((mesh) => {
+        mesh.actionManager = new ActionManager(context.scene);
+        mesh.actionManager.registerAction(
+          new ExecuteCodeAction(ActionManager.OnPickUpTrigger, (event) => {
+            if (event.additionalData) {
+              let mesh = <AbstractMesh>event.additionalData.pickedMesh;
+              console.log(event)
+              context.camera.setTarget(mesh.getAbsolutePosition());
+            }
+          })
+        );
+
+        context.camera.setTarget(mesh.getBoundingInfo().boundingBox.center);
       });
-      mesh.id = node.id;
-      // Fix position
-      mesh.translate(node.position, 1, Space.WORLD);
-      mesh.setPivotPoint(mesh.getBoundingInfo().boundingBox.center);
-
-      mesh.actionManager = new ActionManager(context.scene);
-      mesh.actionManager.registerAction(
-        new ExecuteCodeAction(ActionManager.OnPickUpTrigger, (event) => {
-          if (event.additionalData) {
-            let mesh = <AbstractMesh>event.additionalData.pickedMesh;
-            console.log(event)
-            context.camera.setTarget(mesh.getAbsolutePosition());
-          }
-        })
-      );
-
-      context.camera.setTarget(mesh.getBoundingInfo().boundingBox.center);
     });
 
     // Put edge in place
@@ -262,30 +258,42 @@ export class MapHelperService {
     return new BoundingInfo(min, max);
   };
 
-  load(context: MapHelperContext): Promise<Mesh> {
+  private baseName(str: string) {
+    var base = new String(str).substring(str.lastIndexOf('/') + 1);
+    if (base.lastIndexOf(".") != -1)
+      base = base.substring(0, base.lastIndexOf("."));
+    return base;
+  }
+
+  private dirName(str: string) {
+    var base = new String(str).substring(0, str.lastIndexOf('/'));
+    return base;
+  }
+
+  load(context: MapHelperContext, node: MapHelperNode): Promise<Mesh> {
     return new Promise<Mesh>((resolve) => {
-      SceneLoader.ImportMesh("", "assets/models/Dude/", "Dude.babylon", context.scene, (meshes, particleSystems, skeletons) => {
+      let url = `/api${node.resource}`;
+      SceneLoader.ImportMesh("", `${this.dirName(url)}/`, `${this.baseName(url)}.babylon`, context.scene, (meshes, particleSystems, skeletons) => {
         context.scene.beginAnimation(skeletons[0], 0, 100, true, 1.0);
 
+        // create collider
         const collider = MeshBuilder.CreateSphere("box", {
-          diameter: 69
+          diameter: node.size
         }, context.scene);
-        let boundingBox = this.getBoundingInfo(meshes);
-        let direction = boundingBox.boundingSphere.center.clone();
-        direction.normalize();
-        collider.translate(direction, boundingBox.boundingSphere.center.length(), Space.LOCAL);
-
-        context.camera.setTarget(collider.getBoundingInfo().boundingSphere.center);
-
-        collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: 5, friction: 0.5, restitution: 0.7 }, context.scene);
-        collider.isVisible = false;
+        collider.id = node.id;
 
         // add each mesh to collider
         _.each(meshes, (mesh) => {
           collider.addChild(mesh);
         })
 
-        context.mesh = meshes[0];
+        // Fix position
+        collider.translate(node.position, 1, Space.WORLD);
+        collider.setPivotPoint(collider.getBoundingInfo().boundingBox.center);
+
+        collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: node.weight, friction: 0.5, restitution: 0.7 }, context.scene);
+        collider.isVisible = true;
+
         resolve(collider);
       });
     });

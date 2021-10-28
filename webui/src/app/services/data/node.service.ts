@@ -8,6 +8,8 @@ export class MapHelperNode {
   name!: string;
   size!: number;
   position!: Vector3;
+  resource!: string;
+  weight!: number;
 }
 
 @Injectable({
@@ -22,14 +24,16 @@ export class NodeService {
     return new Promise<any>((resolve) => {
       this.dataStreamService.getToken().then(() => {
         this.dataStreamService.graphqlWithToken(
-          `{nodes {id name position size}}`
+          `{nodes {id name position size resource {url} height}}`
         ).then((value) => {
           resolve(_.flatMap<any, MapHelperNode>((<any>value).data.nodes, (node) => {
             return <MapHelperNode>{
               id: node.id,
               name: node.name,
               position: node.position ? new Vector3(node.position.x, node.position.y, node.position.z) : undefined,
-              size: node.size
+              size: node.size,
+              resource: node.resource.url,
+              weight: node.weight
             };
           }));
         });
