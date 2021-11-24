@@ -28,8 +28,8 @@ export class EdgeService {
             return <MapHelperEdge>{
               id: edge.id,
               name: edge.name,
-              source: edge.source,
-              target: edge.target
+              source: edge.source.id,
+              target: edge.target.id
             };
           }));
         });

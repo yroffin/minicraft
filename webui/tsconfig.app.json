@@ -5,7 +5,8 @@
     "outDir": "./out-tsc/app",
     "skipLibCheck": true,
     "types": [
-      "babylonjs"
+      "babylonjs",
+      "babylonjs-loaders"
     ],
     "paths": {}
   },

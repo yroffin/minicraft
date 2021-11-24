@@ -531,7 +531,7 @@
               "name",
               "position",
               "size",
-              "resource"
+              "type"
             ],
             "properties": {
               "id": {
@@ -546,11 +546,16 @@
               "size": {
                 "type": "number"
               },
-              "resource": {
-                "type": "string"
-              },
               "height": {
                 "type": "number"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "cube",
+                  "sphere",
+                  "cylinder"
+                ]
               },
               "published_at": {
                 "type": "string"
@@ -569,7 +574,7 @@
               "name",
               "position",
               "size",
-              "resource"
+              "type"
             ],
             "properties": {
               "id": {
@@ -584,11 +589,16 @@
               "size": {
                 "type": "number"
               },
-              "resource": {
-                "type": "string"
-              },
               "height": {
                 "type": "number"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "cube",
+                  "sphere",
+                  "cylinder"
+                ]
               },
               "published_at": {
                 "type": "string"

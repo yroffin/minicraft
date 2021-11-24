@@ -24,18 +24,17 @@
       "type": "float",
       "required": true
     },
-    "resource": {
-      "model": "file",
-      "via": "related",
-      "allowedTypes": [
-        "files"
-      ],
-      "plugin": "upload",
-      "required": true,
-      "pluginOptions": {}
-    },
     "height": {
       "type": "float"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "cube",
+        "sphere",
+        "cylinder"
+      ],
+      "required": true
     }
   }
 }

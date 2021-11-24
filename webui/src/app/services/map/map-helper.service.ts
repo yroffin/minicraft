@@ -1,16 +1,15 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { MaxLengthValidator } from '@angular/forms';
 import { AbstractMesh, ActionManager, ArcRotateCamera, BoundingInfo, Color3, DynamicTexture, Engine, ExecuteCodeAction, HemisphericLight, Mesh, MeshBuilder, OimoJSPlugin, PhysicsImpostor, Scene, SceneLoader, Space, StandardMaterial, Vector3 } from 'babylonjs';
-import { ModelShape } from 'babylonjs/Particles/solidParticle';
+import { AdvancedDynamicTexture, Ellipse, Line, Rectangle, TextBlock } from 'babylonjs-gui';
+import { OBJFileLoader, STLFileLoader, GLTFFileLoader } from 'babylonjs-loaders';
 import * as CANNON from 'cannon';
 import * as _ from 'lodash';
-import { isNumber } from 'lodash';
-import { mxCell } from 'mxgraphdata';
 import * as OIMO from 'oimo';
+import { Subject } from 'rxjs';
 import { Msg } from 'src/app/classes/component.interface';
 import { BrowserService } from '../browser.service';
 import { EdgeService, MapHelperEdge } from '../data/edge.service';
-import { MapHelperNode, NodeService } from '../data/node.service';
+import { MapHelperNode, MapHelperNodeType, NodeService } from '../data/node.service';
 import { LoadAssetService } from '../load-asset.service';
 
 export class MapHelperContext {
@@ -46,6 +45,9 @@ export class MapHelperService {
     private readonly edgeService: EdgeService
   ) {
     browserService.nativeWindow.CANNON = CANNON;
+    SceneLoader.RegisterPlugin(new STLFileLoader());
+    SceneLoader.RegisterPlugin(new OBJFileLoader());
+    SceneLoader.RegisterPlugin(new GLTFFileLoader());
   }
 
   notify(msg: Msg): void {
@@ -135,25 +137,13 @@ export class MapHelperService {
       let edges = await this.edgeService.findAll();
 
       const world: MapHelperGraph = {
-        nodes: _.flatMap<any, MapHelperNode>(await this.nodeService.findAll(), (node) => {
-          return {
-            id: node.id,
-            name: node.name,
-            size: node.size,
-            position: node.position,
-            resource: node.resource,
-            weight: node.weight
-          }
+        nodes: _.sortBy(await this.nodeService.findAll(), (node) => {
+          return node.position.z
         }),
-        edges: _.flatMap<any, MapHelperEdge>(await this.edgeService.findAll(), (edge) => {
-          return {
-            id: edge.id,
-            name: edge.name,
-            source: edge.source.id,
-            target: edge.target.id
-          }
-        }),
+        edges: await this.edgeService.findAll(),
       }
+
+      console.log(world);
 
       // Draw this graph
       this.draw(context, world);
@@ -163,47 +153,34 @@ export class MapHelperService {
   }
 
   private draw(context: MapHelperContext, world: MapHelperGraph) {
-    let index = {};
-
-    // Build index
-    _.each(world.nodes, (node) => {
-      eval(`index['${node.name}'] = node`);
-    });
-
-    // Put node in place
-    _.each(world.nodes, (node) => {
-      this.load(context, node).then((mesh) => {
-        mesh.actionManager = new ActionManager(context.scene);
-        mesh.actionManager.registerAction(
-          new ExecuteCodeAction(ActionManager.OnPickUpTrigger, (event) => {
-            if (event.additionalData) {
-              let mesh = <AbstractMesh>event.additionalData.pickedMesh;
-              console.log(event)
-              context.camera.setTarget(mesh.getAbsolutePosition());
-            }
-          })
-        );
-
-        context.camera.setTarget(mesh.getBoundingInfo().boundingBox.center);
+    (async () => {
+      // Transform all node in mesh
+      let meshes = _.flatMap(world.nodes, async (node) => {
+        let mesh = await this.load(context, node);
+        return mesh;
       });
-    });
+      let result = await Promise.all(meshes);
 
-    // Put edge in place
-    _.each(world.edges, (edge) => {
-      let from = context.scene.getMeshById(edge.source);
-      let to = context.scene.getMeshById(edge.target);
-      if (from && to) {
-        let line = MeshBuilder.CreateLines("name", {
-          points: [
-            from.getBoundingInfo().boundingBox.centerWorld,
-            to.getBoundingInfo().boundingBox.centerWorld
-          ]
-        });
-        line.color = new Color3(1, 0, 0);
-      } else {
-        console.log(`from/to is null`);
-      }
-    });
+      // Transform all edge to edge mesh
+      _.each(world.edges, (edge) => {
+        console.log(edge);
+        let source = context.scene.getMeshByID(edge.source);
+        let target = context.scene.getMeshByID(edge.target);
+        if (source && target) {
+          console.log(source);
+          console.log(target);
+          let line = MeshBuilder.CreateLines("name", {
+            points: [
+              source.getBoundingInfo().boundingBox.centerWorld,
+              target.getBoundingInfo().boundingBox.centerWorld
+            ]
+          });
+          line.color = new Color3(1, 0, 0);
+        } else {
+          console.log(`Source: ${edge.source} Target: ${edge.target}`);
+        }
+      });
+    })();
   }
 
   private showWorldAxis(size: number, context: MapHelperContext) {
@@ -270,32 +247,108 @@ export class MapHelperService {
     return base;
   }
 
+  private ext(str: string) {
+    var base = new String(str).substring(str.lastIndexOf('.'));
+    return base;
+  }
+
   load(context: MapHelperContext, node: MapHelperNode): Promise<Mesh> {
     return new Promise<Mesh>((resolve) => {
-      let url = `/api${node.resource}`;
-      SceneLoader.ImportMesh("", `${this.dirName(url)}/`, `${this.baseName(url)}.babylon`, context.scene, (meshes, particleSystems, skeletons) => {
-        context.scene.beginAnimation(skeletons[0], 0, 100, true, 1.0);
 
-        // create collider
-        const collider = MeshBuilder.CreateSphere("box", {
-          diameter: node.size
-        }, context.scene);
-        collider.id = node.id;
+      // Create main mesh
+      let meshes: Mesh[] = [];
+      switch (node.type) {
+        case MapHelperNodeType.cube:
+          meshes = [MeshBuilder.CreateBox(node.name, {
+            size: node.size
+          }, context.scene)];
+          break;
+        case MapHelperNodeType.sphere:
+          meshes = [MeshBuilder.CreateSphere(node.name, {
+            diameter: node.size
+          }, context.scene)];
+          break;
+        case MapHelperNodeType.cylinder:
+          meshes = [MeshBuilder.CreateCylinder(node.name, {
+            diameter: node.size,
+            height: node.size
+          }, context.scene)];
+          break;
+      }
 
-        // add each mesh to collider
-        _.each(meshes, (mesh) => {
-          collider.addChild(mesh);
+      // GUI
+      var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+      advancedTexture.idealWidth = 600;
+
+      var rect1 = new Rectangle();
+      rect1.width = 0.1;
+      rect1.height = "10px";
+      rect1.cornerRadius = 10;
+      rect1.color = "Orange";
+      rect1.thickness = 1;
+      rect1.background = "green";
+      rect1.alpha = 0.6;
+      advancedTexture.addControl(rect1);
+      rect1.linkWithMesh(meshes[0]);
+      rect1.linkOffsetY = -50;
+
+      var label = new TextBlock();
+      label.text = node.name;
+      label.fontSize = 5;
+      rect1.addControl(label);
+
+      var target = new Ellipse();
+      target.width = "5px";
+      target.height = "5px";
+      target.color = "Orange";
+      target.thickness = 1;
+      target.background = "green";
+      advancedTexture.addControl(target);
+      target.linkWithMesh(meshes[0]);
+
+      var line = new Line();
+      line.lineWidth = 2;
+      line.color = "Orange";
+      line.y2 = 5;
+      line.linkOffsetY = -2;
+      advancedTexture.addControl(line);
+      line.linkWithMesh(meshes[0]);
+      line.connectedControl = rect1;
+
+      // Create collider
+      const collider = MeshBuilder.CreateSphere(`${node.name} collider`, {
+        diameter: node.size
+      }, context.scene);
+      console.log(node);
+      collider.id = node.id;
+
+      // Add each mesh to collider
+      _.each(meshes, (mesh) => {
+        mesh.showBoundingBox = false;
+        collider.addChild(mesh);
+      })
+
+      // Fix position
+      collider.translate(node.position, 1, Space.WORLD);
+      collider.setPivotPoint(collider.getBoundingInfo().boundingBox.center);
+
+      collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: node.weight, friction: 0.5, restitution: 0.7 }, context.scene);
+      collider.isVisible = false;
+
+      meshes[0].actionManager = new ActionManager(context.scene);
+      meshes[0].actionManager.registerAction(
+        new ExecuteCodeAction(ActionManager.OnPickUpTrigger, (event) => {
+          if (event.additionalData) {
+            let mesh = <AbstractMesh>event.additionalData.pickedMesh;
+            console.log(event)
+            context.camera.setTarget(mesh.getAbsolutePosition());
+          }
         })
+      );
 
-        // Fix position
-        collider.translate(node.position, 1, Space.WORLD);
-        collider.setPivotPoint(collider.getBoundingInfo().boundingBox.center);
-
-        collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: node.weight, friction: 0.5, restitution: 0.7 }, context.scene);
-        collider.isVisible = true;
-
-        resolve(collider);
-      });
+      // Fix camera
+      context.camera.setTarget(meshes[0].getBoundingInfo().boundingBox.center);
+      resolve(collider);
     });
   }
 
