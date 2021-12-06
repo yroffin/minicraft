@@ -2,13 +2,7 @@ import { Injectable } from '@angular/core';
 import { Vector3 } from 'babylonjs';
 import { DataStreamService } from '../data-stream.service';
 import * as _ from 'lodash';
-
-export class MapHelperEdge {
-  id!: string;
-  name!: string;
-  source!: string;
-  target!: string;
-}
+import { MapEdge } from 'src/app/classes/model.class';
 
 @Injectable({
   providedIn: 'root'
@@ -18,18 +12,38 @@ export class EdgeService {
   constructor(private dataStreamService: DataStreamService) {
   }
 
-  findAll(): Promise<Array<MapHelperEdge>> {
+  findAll(): Promise<Array<MapEdge>> {
     return new Promise<any>((resolve) => {
       this.dataStreamService.getToken().then(() => {
         this.dataStreamService.graphqlWithToken(
-          `{edges {id name source {id} target {id}}}`
+          `{
+            edges {
+              data {
+                id
+                attributes {
+                  name
+                  source {
+                    data {
+                      id
+                    }
+                  }
+                  target {
+                    data {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }
+          `
         ).then((value) => {
-          resolve(_.flatMap<any, MapHelperEdge>((<any>value).data.edges, (edge) => {
-            return <MapHelperEdge>{
+          resolve(_.flatMap<any, MapEdge>((<any>value).data.edges.data, (edge) => {
+            return <MapEdge>{
               id: edge.id,
-              name: edge.name,
-              source: edge.source.id,
-              target: edge.target.id
+              name: edge.attributes.name,
+              source: 'node-' + edge.attributes.source.data.id,
+              target: 'node-' + edge.attributes.target.data.id
             };
           }));
         });

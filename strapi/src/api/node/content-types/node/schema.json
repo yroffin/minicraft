@@ -1,0 +1,67 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nodes",
+  "info": {
+    "singularName": "node",
+    "pluralName": "nodes",
+    "displayName": "Node",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "pluginOptions": {},
+      "type": "string",
+      "unique": false,
+      "required": true,
+      "default": "default"
+    },
+    "size": {
+      "pluginOptions": {},
+      "type": "float",
+      "required": true
+    },
+    "weight": {
+      "pluginOptions": {},
+      "type": "float",
+      "required": true
+    },
+    "type": {
+      "pluginOptions": {},
+      "type": "enumeration",
+      "enum": [
+        "cube",
+        "sphere",
+        "cylinder"
+      ],
+      "required": true
+    },
+    "x": {
+      "pluginOptions": {},
+      "type": "float",
+      "required": true,
+      "default": 0
+    },
+    "y": {
+      "pluginOptions": {},
+      "type": "float",
+      "default": 0,
+      "required": true
+    },
+    "z": {
+      "pluginOptions": {},
+      "type": "float",
+      "default": 0,
+      "required": true
+    },
+    "component": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::component.component",
+      "inversedBy": "nodes"
+    }
+  }
+}

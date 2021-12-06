@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Vector3 } from 'babylonjs';
 import { DataStreamService } from '../data-stream.service';
 import * as _ from 'lodash';
-import { MapItemType, MapNode } from 'src/app/classes/model.class';
-import { componentFactoryName } from '@angular/compiler';
+import { Vector3 } from 'babylonjs';
+import { MapComponent, MapItemType } from 'src/app/classes/model.class';
 
 @Injectable({
   providedIn: 'root'
 })
-export class NodeService {
+export class ComponentService {
 
   constructor(private dataStreamService: DataStreamService) {
   }
@@ -26,23 +25,23 @@ export class NodeService {
     }
   }
 
-  findAll(): Promise<Array<MapNode>> {
+  findAll(): Promise<Array<MapComponent>> {
     return new Promise<any>((resolve) => {
       this.dataStreamService.getToken().then(() => {
         this.dataStreamService.graphqlWithToken(
           `{
-            nodes {
+            components {
               data {
                 id
                 attributes {
                   name
+                  size
+                  weight
                   type
                   x
                   y
                   z
-                  size
-                  weight
-                  component {
+                  nodes {
                     data {
                       attributes {
                         x
@@ -57,18 +56,17 @@ export class NodeService {
           }
           `
         ).then((value) => {
-          resolve(_.flatMap<any, MapNode>((<any>value).data.nodes.data, (node) => {
-            console.log(node)
-            return <MapNode>{
-              id: node.id,
-              name: node.attributes.name,
-              type: this.decode(node.attributes.type),
+          resolve(_.flatMap<any, MapComponent>((<any>value).data.components.data, (component) => {
+            return <MapComponent>{
+              id: component.id,
+              name: component.attributes.name,
+              size: component.attributes.size,
+              weight: component.attributes.weight,
+              type: this.decode(component.attributes.type),
               position: new Vector3(
-                node.attributes.x + node.attributes.component.data.attributes.x,
-                node.attributes.y + node.attributes.component.data.attributes.y,
-                node.attributes.z + node.attributes.component.data.attributes.z),
-              size: node.attributes.size,
-              weight: node.attributes.weight
+                component.attributes.x,
+                component.attributes.y,
+                component.attributes.z),
             };
           }));
         });

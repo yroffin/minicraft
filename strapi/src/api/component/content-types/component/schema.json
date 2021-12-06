@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "components",
+  "info": {
+    "singularName": "component",
+    "pluralName": "components",
+    "displayName": "component",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "x": {
+      "type": "float",
+      "required": true,
+      "default": 0
+    },
+    "y": {
+      "type": "float",
+      "default": 0,
+      "required": true
+    },
+    "z": {
+      "type": "float",
+      "default": 0,
+      "required": true
+    },
+    "nodes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::node.node",
+      "mappedBy": "component"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "cube",
+        "sphere",
+        "cylinder"
+      ],
+      "required": true
+    },
+    "size": {
+      "type": "float",
+      "required": true,
+      "default": 5
+    },
+    "weight": {
+      "type": "float",
+      "required": true,
+      "default": 5
+    },
+    "component": {
+      "type": "uid",
+      "targetField": "name"
+    }
+  }
+}

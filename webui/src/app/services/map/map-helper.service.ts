@@ -7,9 +7,11 @@ import * as _ from 'lodash';
 import * as OIMO from 'oimo';
 import { Subject } from 'rxjs';
 import { Msg } from 'src/app/classes/component.interface';
+import { MapAbstractNode, MapComponent, MapEdge, MapItemType, MapNode } from 'src/app/classes/model.class';
 import { BrowserService } from '../browser.service';
-import { EdgeService, MapHelperEdge } from '../data/edge.service';
-import { MapHelperNode, MapHelperNodeType, NodeService } from '../data/node.service';
+import { ComponentService } from '../data/component.service';
+import { EdgeService } from '../data/edge.service';
+import { NodeService } from '../data/node.service';
 import { LoadAssetService } from '../load-asset.service';
 
 export class MapHelperContext {
@@ -27,8 +29,9 @@ export class MapHelperContext {
 }
 
 export class MapHelperGraph {
-  nodes: Array<MapHelperNode> = [];
-  edges: Array<MapHelperEdge> = [];
+  components: Array<MapComponent> = [];
+  nodes: Array<MapNode> = [];
+  edges: Array<MapEdge> = [];
 }
 
 @Injectable({
@@ -41,6 +44,7 @@ export class MapHelperService {
   constructor(
     private readonly browserService: BrowserService,
     private readonly loadAssetService: LoadAssetService,
+    private readonly componentService: ComponentService,
     private readonly nodeService: NodeService,
     private readonly edgeService: EdgeService
   ) {
@@ -133,14 +137,14 @@ export class MapHelperService {
         }
       }, context.scene);
 
-      let nodes = await this.nodeService.findAll();
-      let edges = await this.edgeService.findAll();
-
       const world: MapHelperGraph = {
+        components: _.sortBy(await this.componentService.findAll(), (component) => {
+          return component.position.z
+        }),
         nodes: _.sortBy(await this.nodeService.findAll(), (node) => {
           return node.position.z
         }),
-        edges: await this.edgeService.findAll(),
+        edges: await this.edgeService.findAll()
       }
 
       console.log(world);
@@ -154,18 +158,22 @@ export class MapHelperService {
 
   private draw(context: MapHelperContext, world: MapHelperGraph) {
     (async () => {
-      // Transform all node in mesh
-      let meshes = _.flatMap(world.nodes, async (node) => {
-        let mesh = await this.load(context, node);
+      // Transform all components in mesh
+      let componentsMesh = _.flatMap(world.components, async (component) => {
+        let mesh = await this.load(context, "component", component);
         return mesh;
       });
-      let result = await Promise.all(meshes);
+      let nodesMesh = _.flatMap(world.nodes, async (node) => {
+        let mesh = await this.load(context, "node", node);
+        return mesh;
+      });
+      let result = await Promise.all(_.union(componentsMesh, nodesMesh));
 
       // Transform all edge to edge mesh
       _.each(world.edges, (edge) => {
         console.log(edge);
-        let source = context.scene.getMeshByID(edge.source);
-        let target = context.scene.getMeshByID(edge.target);
+        let source = context.scene.getMeshByID(`${edge.source}`);
+        let target = context.scene.getMeshByID(`${edge.target}`);
         if (source && target) {
           console.log(source);
           console.log(target);
@@ -175,7 +183,9 @@ export class MapHelperService {
               target.getBoundingInfo().boundingBox.centerWorld
             ]
           });
-          line.color = new Color3(1, 0, 0);
+          console.log(source.getBoundingInfo().boundingBox.centerWorld);
+          console.log(target.getBoundingInfo().boundingBox.centerWorld);
+          line.color = new Color3(10, 0, 0);
         } else {
           console.log(`Source: ${edge.source} Target: ${edge.target}`);
         }
@@ -252,29 +262,30 @@ export class MapHelperService {
     return base;
   }
 
-  load(context: MapHelperContext, node: MapHelperNode): Promise<Mesh> {
+  load(context: MapHelperContext, klass: string, component: MapAbstractNode): Promise<Mesh> {
     return new Promise<Mesh>((resolve) => {
 
       // Create main mesh
       let meshes: Mesh[] = [];
-      switch (node.type) {
-        case MapHelperNodeType.cube:
-          meshes = [MeshBuilder.CreateBox(node.name, {
-            size: node.size
+      switch (component.type) {
+        case MapItemType.cube:
+          meshes = [MeshBuilder.CreateBox(`${klass}-${component.id}-mesh`, {
+            size: component.size
           }, context.scene)];
           break;
-        case MapHelperNodeType.sphere:
-          meshes = [MeshBuilder.CreateSphere(node.name, {
-            diameter: node.size
+        case MapItemType.sphere:
+          meshes = [MeshBuilder.CreateSphere(`${klass}-${component.id}-mesh`, {
+            diameter: component.size
           }, context.scene)];
           break;
-        case MapHelperNodeType.cylinder:
-          meshes = [MeshBuilder.CreateCylinder(node.name, {
-            diameter: node.size,
-            height: node.size
+        case MapItemType.cylinder:
+          meshes = [MeshBuilder.CreateCylinder(`${klass}-${component.id}-mesh`, {
+            diameter: component.size,
+            height: component.size
           }, context.scene)];
           break;
       }
+      console.log(meshes[0]);
 
       // GUI
       var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -293,7 +304,7 @@ export class MapHelperService {
       rect1.linkOffsetY = -50;
 
       var label = new TextBlock();
-      label.text = node.name;
+      label.text = component.name;
       label.fontSize = 5;
       rect1.addControl(label);
 
@@ -316,11 +327,10 @@ export class MapHelperService {
       line.connectedControl = rect1;
 
       // Create collider
-      const collider = MeshBuilder.CreateSphere(`${node.name} collider`, {
-        diameter: node.size
+      const collider = MeshBuilder.CreateSphere(`${klass}-${component.id}`, {
+        diameter: component.size
       }, context.scene);
-      console.log(node);
-      collider.id = node.id;
+      console.log(collider);
 
       // Add each mesh to collider
       _.each(meshes, (mesh) => {
@@ -329,18 +339,22 @@ export class MapHelperService {
       })
 
       // Fix position
-      collider.translate(node.position, 1, Space.WORLD);
+      collider.translate(component.position, 1, Space.WORLD);
       collider.setPivotPoint(collider.getBoundingInfo().boundingBox.center);
 
-      collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: node.weight, friction: 0.5, restitution: 0.7 }, context.scene);
+      collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: component.weight, friction: 0.5, restitution: 0.7 }, context.scene);
       collider.isVisible = false;
 
       meshes[0].actionManager = new ActionManager(context.scene);
       meshes[0].actionManager.registerAction(
-        new ExecuteCodeAction(ActionManager.OnPickUpTrigger, (event) => {
+        new ExecuteCodeAction(ActionManager.OnDoublePickTrigger, (event) => {
+          console.log(event)
           if (event.additionalData) {
             let mesh = <AbstractMesh>event.additionalData.pickedMesh;
-            console.log(event)
+            context.camera.setTarget(mesh.getAbsolutePosition());
+          }
+          if (event.meshUnderPointer) {
+            let mesh = <AbstractMesh>event.meshUnderPointer;
             context.camera.setTarget(mesh.getAbsolutePosition());
           }
         })
