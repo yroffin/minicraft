@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_utils_vectors",
+  "info": {
+    "displayName": "vector",
+    "icon": "award",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "x": {
+      "type": "float",
+      "required": true,
+      "default": 0
+    },
+    "y": {
+      "type": "float",
+      "required": true,
+      "default": 0
+    },
+    "z": {
+      "type": "float",
+      "required": true,
+      "default": 0
+    }
+  }
+}

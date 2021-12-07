@@ -9,7 +9,7 @@ const routes: Routes = [
     component: WorldComponent
   },
   {
-    path: 'world',
+    path: 'domains/:domainId',
     component: WorldComponent
   },
   {

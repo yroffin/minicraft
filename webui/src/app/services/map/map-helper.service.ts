@@ -62,11 +62,11 @@ export class MapHelperService {
     return this.emitter;
   }
 
-  initialize(canvas: HTMLCanvasElement): Promise<MapHelperContext> {
+  initialize(domainId: string, canvas: HTMLCanvasElement): Promise<MapHelperContext> {
     return new Promise<MapHelperContext>((resolve) => {
       this.loadEngineAndPhysics(canvas).then((context) => {
         this.loadCamerasAndLights(canvas, context);
-        this.loadWorld(context).then((context) => {
+        this.loadWorld(domainId, context).then((context) => {
           // run the render loop
           context.engine.runRenderLoop(() => {
             context.scene.render(true, false);
@@ -118,7 +118,7 @@ export class MapHelperService {
     this.showWorldAxis(50, context);
   }
 
-  loadWorld(context: MapHelperContext) {
+  loadWorld(domainId: string, context: MapHelperContext) {
     return new Promise<MapHelperContext>(async (resolve) => {
       const height = MeshBuilder.CreateGroundFromHeightMap("gdhm", "assets/textures/heightMap.png", {
         width: 2500,
@@ -138,16 +138,21 @@ export class MapHelperService {
       }, context.scene);
 
       const world: MapHelperGraph = {
-        components: _.sortBy(await this.componentService.findAll(), (component) => {
+        components: _.sortBy(_.filter(await this.componentService.findAll(), (component) => {
+          return _.find(component.domains, { id: domainId }) !== undefined
+        }), (component) => {
           return component.position.z
         }),
-        nodes: _.sortBy(await this.nodeService.findAll(), (node) => {
+        nodes: _.sortBy(_.filter(await this.nodeService.findAll(), node => {
+          return _.find(node.domains, { id: domainId }) !== undefined
+        }), (node) => {
           return node.position.z
         }),
         edges: await this.edgeService.findAll()
       }
 
-      console.log(world);
+      console.log(world.components)
+      console.log(world.nodes)
 
       // Draw this graph
       this.draw(context, world);
@@ -171,20 +176,15 @@ export class MapHelperService {
 
       // Transform all edge to edge mesh
       _.each(world.edges, (edge) => {
-        console.log(edge);
         let source = context.scene.getMeshByID(`${edge.source}`);
         let target = context.scene.getMeshByID(`${edge.target}`);
         if (source && target) {
-          console.log(source);
-          console.log(target);
           let line = MeshBuilder.CreateLines("name", {
             points: [
               source.getBoundingInfo().boundingBox.centerWorld,
               target.getBoundingInfo().boundingBox.centerWorld
             ]
           });
-          console.log(source.getBoundingInfo().boundingBox.centerWorld);
-          console.log(target.getBoundingInfo().boundingBox.centerWorld);
           line.color = new Color3(10, 0, 0);
         } else {
           console.log(`Source: ${edge.source} Target: ${edge.target}`);
@@ -226,42 +226,6 @@ export class MapHelperService {
     zChar.position = new Vector3(0, 0.05 * size, 0.9 * size);
   };
 
-  private getMinMax(mesh: AbstractMesh) {
-    var info = mesh.getBoundingInfo();
-    var min = info.minimum.multiply(mesh.scaling).add(mesh.position);
-    var max = info.maximum.multiply(mesh.scaling).add(mesh.position);
-    return { min: min, max: max };
-  };
-
-  private getBoundingInfo(meshes: AbstractMesh[]) {
-    let mm = this.getMinMax(meshes[0]);
-    let min = mm.min;
-    let max = mm.max;
-    _.each(meshes, (mesh) => {
-      mm = this.getMinMax(mesh);
-      min = Vector3.Minimize(min, mm.min);
-      max = Vector3.Maximize(max, mm.max);
-    });
-    return new BoundingInfo(min, max);
-  };
-
-  private baseName(str: string) {
-    var base = new String(str).substring(str.lastIndexOf('/') + 1);
-    if (base.lastIndexOf(".") != -1)
-      base = base.substring(0, base.lastIndexOf("."));
-    return base;
-  }
-
-  private dirName(str: string) {
-    var base = new String(str).substring(0, str.lastIndexOf('/'));
-    return base;
-  }
-
-  private ext(str: string) {
-    var base = new String(str).substring(str.lastIndexOf('.'));
-    return base;
-  }
-
   load(context: MapHelperContext, klass: string, component: MapAbstractNode): Promise<Mesh> {
     return new Promise<Mesh>((resolve) => {
 
@@ -285,7 +249,6 @@ export class MapHelperService {
           }, context.scene)];
           break;
       }
-      console.log(meshes[0]);
 
       // GUI
       var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -330,7 +293,6 @@ export class MapHelperService {
       const collider = MeshBuilder.CreateSphere(`${klass}-${component.id}`, {
         diameter: component.size
       }, context.scene);
-      console.log(collider);
 
       // Add each mesh to collider
       _.each(meshes, (mesh) => {
@@ -348,7 +310,6 @@ export class MapHelperService {
       meshes[0].actionManager = new ActionManager(context.scene);
       meshes[0].actionManager.registerAction(
         new ExecuteCodeAction(ActionManager.OnDoublePickTrigger, (event) => {
-          console.log(event)
           if (event.additionalData) {
             let mesh = <AbstractMesh>event.additionalData.pickedMesh;
             context.camera.setTarget(mesh.getAbsolutePosition());

@@ -22,6 +22,7 @@ export class RendererComponent implements AfterContentInit, OnDestroy {
   @Input() alpha = 0;
   @Input() rotateSpeed = 1.0;
   @Input() zoomSpeed = 1.2;
+  @Input() domainId = "";
 
   constructor(private mapHelperService: MapHelperService) {
   }
@@ -30,7 +31,7 @@ export class RendererComponent implements AfterContentInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.mapHelperService.initialize(this.canvas).then((context) => {
+    this.mapHelperService.initialize(this.domainId, this.canvas).then((context) => {
       this.context = context;
     });
   }

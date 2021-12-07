@@ -4,7 +4,7 @@
   "info": {
     "singularName": "component",
     "pluralName": "components",
-    "displayName": "component",
+    "displayName": "Component",
     "description": ""
   },
   "options": {
@@ -14,21 +14,6 @@
   "attributes": {
     "name": {
       "type": "string"
-    },
-    "x": {
-      "type": "float",
-      "required": true,
-      "default": 0
-    },
-    "y": {
-      "type": "float",
-      "default": 0,
-      "required": true
-    },
-    "z": {
-      "type": "float",
-      "default": 0,
-      "required": true
     },
     "nodes": {
       "type": "relation",
@@ -58,6 +43,17 @@
     "component": {
       "type": "uid",
       "targetField": "name"
+    },
+    "position": {
+      "type": "component",
+      "repeatable": false,
+      "component": "utils.vector"
+    },
+    "domains": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::domain.domain",
+      "mappedBy": "components"
     }
   }
 }

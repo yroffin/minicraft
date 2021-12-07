@@ -4,7 +4,7 @@
   "info": {
     "singularName": "edge",
     "pluralName": "edges",
-    "displayName": "edge",
+    "displayName": "Edge",
     "description": ""
   },
   "options": {
@@ -27,6 +27,11 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::node.node"
+    },
+    "meta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "utils.vector"
     }
   }
 }

@@ -38,18 +38,6 @@
                                   "cylinder"
                                 ]
                               },
-                              "x": {
-                                "type": "number",
-                                "format": "float"
-                              },
-                              "y": {
-                                "type": "number",
-                                "format": "float"
-                              },
-                              "z": {
-                                "type": "number",
-                                "format": "float"
-                              },
                               "component": {
                                 "type": "object",
                                 "properties": {
@@ -64,18 +52,6 @@
                                         "properties": {
                                           "name": {
                                             "type": "string"
-                                          },
-                                          "x": {
-                                            "type": "number",
-                                            "format": "float"
-                                          },
-                                          "y": {
-                                            "type": "number",
-                                            "format": "float"
-                                          },
-                                          "z": {
-                                            "type": "number",
-                                            "format": "float"
                                           },
                                           "nodes": {
                                             "type": "object",
@@ -110,18 +86,6 @@
                                                             "cylinder"
                                                           ]
                                                         },
-                                                        "x": {
-                                                          "type": "number",
-                                                          "format": "float"
-                                                        },
-                                                        "y": {
-                                                          "type": "number",
-                                                          "format": "float"
-                                                        },
-                                                        "z": {
-                                                          "type": "number",
-                                                          "format": "float"
-                                                        },
                                                         "component": {
                                                           "type": "object",
                                                           "properties": {
@@ -136,6 +100,26 @@
                                                                   "properties": {}
                                                                 }
                                                               }
+                                                            }
+                                                          }
+                                                        },
+                                                        "delta": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "id": {
+                                                              "type": "string"
+                                                            },
+                                                            "x": {
+                                                              "type": "number",
+                                                              "format": "float"
+                                                            },
+                                                            "y": {
+                                                              "type": "number",
+                                                              "format": "float"
+                                                            },
+                                                            "z": {
+                                                              "type": "number",
+                                                              "format": "float"
                                                             }
                                                           }
                                                         },
@@ -458,6 +442,112 @@
                                           "component": {
                                             "type": "string"
                                           },
+                                          "position": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
+                                                "type": "string"
+                                              },
+                                              "x": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "y": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "z": {
+                                                "type": "number",
+                                                "format": "float"
+                                              }
+                                            }
+                                          },
+                                          "domains": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
+                                                "type": "array",
+                                                "items": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "id": {
+                                                      "type": "string"
+                                                    },
+                                                    "attributes": {
+                                                      "type": "object",
+                                                      "properties": {
+                                                        "name": {
+                                                          "type": "string"
+                                                        },
+                                                        "components": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "data": {
+                                                              "type": "array",
+                                                              "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                  "id": {
+                                                                    "type": "string"
+                                                                  },
+                                                                  "attributes": {
+                                                                    "type": "object",
+                                                                    "properties": {}
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        },
+                                                        "createdAt": {
+                                                          "type": "string",
+                                                          "format": "date-time"
+                                                        },
+                                                        "updatedAt": {
+                                                          "type": "string",
+                                                          "format": "date-time"
+                                                        },
+                                                        "createdBy": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "data": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        },
+                                                        "updatedBy": {
+                                                          "type": "object",
+                                                          "properties": {
+                                                            "data": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          },
                                           "createdAt": {
                                             "type": "string",
                                             "format": "date-time"
@@ -503,6 +593,26 @@
                                         }
                                       }
                                     }
+                                  }
+                                }
+                              },
+                              "delta": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "x": {
+                                    "type": "number",
+                                    "format": "float"
+                                  },
+                                  "y": {
+                                    "type": "number",
+                                    "format": "float"
+                                  },
+                                  "z": {
+                                    "type": "number",
+                                    "format": "float"
                                   }
                                 }
                               },
@@ -849,18 +959,6 @@
                                 "cylinder"
                               ]
                             },
-                            "x": {
-                              "type": "number",
-                              "format": "float"
-                            },
-                            "y": {
-                              "type": "number",
-                              "format": "float"
-                            },
-                            "z": {
-                              "type": "number",
-                              "format": "float"
-                            },
                             "component": {
                               "type": "object",
                               "properties": {
@@ -875,18 +973,6 @@
                                       "properties": {
                                         "name": {
                                           "type": "string"
-                                        },
-                                        "x": {
-                                          "type": "number",
-                                          "format": "float"
-                                        },
-                                        "y": {
-                                          "type": "number",
-                                          "format": "float"
-                                        },
-                                        "z": {
-                                          "type": "number",
-                                          "format": "float"
                                         },
                                         "nodes": {
                                           "type": "object",
@@ -921,18 +1007,6 @@
                                                           "cylinder"
                                                         ]
                                                       },
-                                                      "x": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
-                                                      "y": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
-                                                      "z": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
                                                       "component": {
                                                         "type": "object",
                                                         "properties": {
@@ -947,6 +1021,26 @@
                                                                 "properties": {}
                                                               }
                                                             }
+                                                          }
+                                                        }
+                                                      },
+                                                      "delta": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "string"
+                                                          },
+                                                          "x": {
+                                                            "type": "number",
+                                                            "format": "float"
+                                                          },
+                                                          "y": {
+                                                            "type": "number",
+                                                            "format": "float"
+                                                          },
+                                                          "z": {
+                                                            "type": "number",
+                                                            "format": "float"
                                                           }
                                                         }
                                                       },
@@ -1269,6 +1363,112 @@
                                         "component": {
                                           "type": "string"
                                         },
+                                        "position": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string"
+                                            },
+                                            "x": {
+                                              "type": "number",
+                                              "format": "float"
+                                            },
+                                            "y": {
+                                              "type": "number",
+                                              "format": "float"
+                                            },
+                                            "z": {
+                                              "type": "number",
+                                              "format": "float"
+                                            }
+                                          }
+                                        },
+                                        "domains": {
+                                          "type": "object",
+                                          "properties": {
+                                            "data": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "name": {
+                                                        "type": "string"
+                                                      },
+                                                      "components": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "createdAt": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                      },
+                                                      "updatedAt": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                      },
+                                                      "createdBy": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "id": {
+                                                                "type": "string"
+                                                              },
+                                                              "attributes": {
+                                                                "type": "object",
+                                                                "properties": {}
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "updatedBy": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "id": {
+                                                                "type": "string"
+                                                              },
+                                                              "attributes": {
+                                                                "type": "object",
+                                                                "properties": {}
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
                                         "createdAt": {
                                           "type": "string",
                                           "format": "date-time"
@@ -1314,6 +1514,26 @@
                                       }
                                     }
                                   }
+                                }
+                              }
+                            },
+                            "delta": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "x": {
+                                  "type": "number",
+                                  "format": "float"
+                                },
+                                "y": {
+                                  "type": "number",
+                                  "format": "float"
+                                },
+                                "z": {
+                                  "type": "number",
+                                  "format": "float"
                                 }
                               }
                             },
@@ -1548,18 +1768,6 @@
                           "sphere",
                           "cylinder"
                         ]
-                      },
-                      "x": {
-                        "type": "number",
-                        "format": "float"
-                      },
-                      "y": {
-                        "type": "number",
-                        "format": "float"
-                      },
-                      "z": {
-                        "type": "number",
-                        "format": "float"
                       }
                     }
                   }
@@ -1606,18 +1814,6 @@
                                 "cylinder"
                               ]
                             },
-                            "x": {
-                              "type": "number",
-                              "format": "float"
-                            },
-                            "y": {
-                              "type": "number",
-                              "format": "float"
-                            },
-                            "z": {
-                              "type": "number",
-                              "format": "float"
-                            },
                             "component": {
                               "type": "object",
                               "properties": {
@@ -1632,18 +1828,6 @@
                                       "properties": {
                                         "name": {
                                           "type": "string"
-                                        },
-                                        "x": {
-                                          "type": "number",
-                                          "format": "float"
-                                        },
-                                        "y": {
-                                          "type": "number",
-                                          "format": "float"
-                                        },
-                                        "z": {
-                                          "type": "number",
-                                          "format": "float"
                                         },
                                         "nodes": {
                                           "type": "object",
@@ -1678,18 +1862,6 @@
                                                           "cylinder"
                                                         ]
                                                       },
-                                                      "x": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
-                                                      "y": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
-                                                      "z": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
                                                       "component": {
                                                         "type": "object",
                                                         "properties": {
@@ -1704,6 +1876,26 @@
                                                                 "properties": {}
                                                               }
                                                             }
+                                                          }
+                                                        }
+                                                      },
+                                                      "delta": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "string"
+                                                          },
+                                                          "x": {
+                                                            "type": "number",
+                                                            "format": "float"
+                                                          },
+                                                          "y": {
+                                                            "type": "number",
+                                                            "format": "float"
+                                                          },
+                                                          "z": {
+                                                            "type": "number",
+                                                            "format": "float"
                                                           }
                                                         }
                                                       },
@@ -2026,6 +2218,112 @@
                                         "component": {
                                           "type": "string"
                                         },
+                                        "position": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string"
+                                            },
+                                            "x": {
+                                              "type": "number",
+                                              "format": "float"
+                                            },
+                                            "y": {
+                                              "type": "number",
+                                              "format": "float"
+                                            },
+                                            "z": {
+                                              "type": "number",
+                                              "format": "float"
+                                            }
+                                          }
+                                        },
+                                        "domains": {
+                                          "type": "object",
+                                          "properties": {
+                                            "data": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "name": {
+                                                        "type": "string"
+                                                      },
+                                                      "components": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "createdAt": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                      },
+                                                      "updatedAt": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                      },
+                                                      "createdBy": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "id": {
+                                                                "type": "string"
+                                                              },
+                                                              "attributes": {
+                                                                "type": "object",
+                                                                "properties": {}
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "updatedBy": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "id": {
+                                                                "type": "string"
+                                                              },
+                                                              "attributes": {
+                                                                "type": "object",
+                                                                "properties": {}
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
                                         "createdAt": {
                                           "type": "string",
                                           "format": "date-time"
@@ -2071,6 +2369,26 @@
                                       }
                                     }
                                   }
+                                }
+                              }
+                            },
+                            "delta": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "x": {
+                                  "type": "number",
+                                  "format": "float"
+                                },
+                                "y": {
+                                  "type": "number",
+                                  "format": "float"
+                                },
+                                "z": {
+                                  "type": "number",
+                                  "format": "float"
                                 }
                               }
                             },
@@ -2326,18 +2644,6 @@
                                 "cylinder"
                               ]
                             },
-                            "x": {
-                              "type": "number",
-                              "format": "float"
-                            },
-                            "y": {
-                              "type": "number",
-                              "format": "float"
-                            },
-                            "z": {
-                              "type": "number",
-                              "format": "float"
-                            },
                             "component": {
                               "type": "object",
                               "properties": {
@@ -2352,18 +2658,6 @@
                                       "properties": {
                                         "name": {
                                           "type": "string"
-                                        },
-                                        "x": {
-                                          "type": "number",
-                                          "format": "float"
-                                        },
-                                        "y": {
-                                          "type": "number",
-                                          "format": "float"
-                                        },
-                                        "z": {
-                                          "type": "number",
-                                          "format": "float"
                                         },
                                         "nodes": {
                                           "type": "object",
@@ -2398,18 +2692,6 @@
                                                           "cylinder"
                                                         ]
                                                       },
-                                                      "x": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
-                                                      "y": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
-                                                      "z": {
-                                                        "type": "number",
-                                                        "format": "float"
-                                                      },
                                                       "component": {
                                                         "type": "object",
                                                         "properties": {
@@ -2424,6 +2706,26 @@
                                                                 "properties": {}
                                                               }
                                                             }
+                                                          }
+                                                        }
+                                                      },
+                                                      "delta": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "id": {
+                                                            "type": "string"
+                                                          },
+                                                          "x": {
+                                                            "type": "number",
+                                                            "format": "float"
+                                                          },
+                                                          "y": {
+                                                            "type": "number",
+                                                            "format": "float"
+                                                          },
+                                                          "z": {
+                                                            "type": "number",
+                                                            "format": "float"
                                                           }
                                                         }
                                                       },
@@ -2746,6 +3048,112 @@
                                         "component": {
                                           "type": "string"
                                         },
+                                        "position": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string"
+                                            },
+                                            "x": {
+                                              "type": "number",
+                                              "format": "float"
+                                            },
+                                            "y": {
+                                              "type": "number",
+                                              "format": "float"
+                                            },
+                                            "z": {
+                                              "type": "number",
+                                              "format": "float"
+                                            }
+                                          }
+                                        },
+                                        "domains": {
+                                          "type": "object",
+                                          "properties": {
+                                            "data": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "name": {
+                                                        "type": "string"
+                                                      },
+                                                      "components": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "array",
+                                                            "items": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "createdAt": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                      },
+                                                      "updatedAt": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                      },
+                                                      "createdBy": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "id": {
+                                                                "type": "string"
+                                                              },
+                                                              "attributes": {
+                                                                "type": "object",
+                                                                "properties": {}
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "updatedBy": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "data": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "id": {
+                                                                "type": "string"
+                                                              },
+                                                              "attributes": {
+                                                                "type": "object",
+                                                                "properties": {}
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
                                         "createdAt": {
                                           "type": "string",
                                           "format": "date-time"
@@ -2791,6 +3199,26 @@
                                       }
                                     }
                                   }
+                                }
+                              }
+                            },
+                            "delta": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "x": {
+                                  "type": "number",
+                                  "format": "float"
+                                },
+                                "y": {
+                                  "type": "number",
+                                  "format": "float"
+                                },
+                                "z": {
+                                  "type": "number",
+                                  "format": "float"
                                 }
                               }
                             },
@@ -3037,18 +3465,6 @@
                           "cylinder"
                         ]
                       },
-                      "x": {
-                        "type": "number",
-                        "format": "float"
-                      },
-                      "y": {
-                        "type": "number",
-                        "format": "float"
-                      },
-                      "z": {
-                        "type": "number",
-                        "format": "float"
-                      },
                       "component": {
                         "oneOf": [
                           {
@@ -3059,6 +3475,23 @@
                           }
                         ],
                         "example": "string or id"
+                      },
+                      "delta": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number",
+                            "format": "float"
+                          },
+                          "y": {
+                            "type": "number",
+                            "format": "float"
+                          },
+                          "z": {
+                            "type": "number",
+                            "format": "float"
+                          }
+                        }
                       },
                       "createdAt": {
                         "type": "string",

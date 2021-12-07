@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IComponent, Msg } from 'src/app/classes/component.interface';
 import { MapHelperService } from 'src/app/services/map/map-helper.service';
 import { RendererComponent } from '../../render/render.component';
@@ -11,8 +12,11 @@ import { RendererComponent } from '../../render/render.component';
 export class WorldComponent implements AfterViewInit, IComponent {
 
   @ViewChild(RendererComponent) renderer!: RendererComponent;
+  domainId!: string;
 
-  constructor(private mapHelperService: MapHelperService) {
+  constructor(private mapHelperService: MapHelperService, private actRoute: ActivatedRoute) {
+    // get domainId from url
+    this.domainId = this.actRoute.snapshot.params.domainId;
   }
 
   ngAfterViewInit() {

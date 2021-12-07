@@ -38,15 +38,24 @@ export class ComponentService {
                   size
                   weight
                   type
-                  x
-                  y
-                  z
+                  position {
+                    x
+                    y
+                    z
+                  }
+                  domains {
+                    data {
+                      id
+                    }
+                  }
                   nodes {
                     data {
                       attributes {
-                        x
-                        y
-                        z
+                        delta {
+                          x
+                          y
+                          z
+                        }
                       }
                     }
                   }
@@ -63,10 +72,11 @@ export class ComponentService {
               size: component.attributes.size,
               weight: component.attributes.weight,
               type: this.decode(component.attributes.type),
+              domains: component.attributes.domains.data,
               position: new Vector3(
-                component.attributes.x,
-                component.attributes.y,
-                component.attributes.z),
+                component.attributes.position.x,
+                component.attributes.position.y,
+                component.attributes.position.z),
             };
           }));
         });

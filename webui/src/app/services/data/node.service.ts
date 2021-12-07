@@ -37,17 +37,26 @@ export class NodeService {
                 attributes {
                   name
                   type
-                  x
-                  y
-                  z
+                  delta {
+                    x
+                    y
+                    z
+                  }
                   size
                   weight
                   component {
                     data {
                       attributes {
-                        x
-                        y
-                        z
+                        position {
+                          x
+                          y
+                          z
+                        }
+                        domains {
+                          data {
+                            id
+                          }
+                        }
                       }
                     }
                   }
@@ -58,15 +67,15 @@ export class NodeService {
           `
         ).then((value) => {
           resolve(_.flatMap<any, MapNode>((<any>value).data.nodes.data, (node) => {
-            console.log(node)
             return <MapNode>{
               id: node.id,
               name: node.attributes.name,
               type: this.decode(node.attributes.type),
               position: new Vector3(
-                node.attributes.x + node.attributes.component.data.attributes.x,
-                node.attributes.y + node.attributes.component.data.attributes.y,
-                node.attributes.z + node.attributes.component.data.attributes.z),
+                node.attributes.delta.x + node.attributes.component.data.attributes.position.x,
+                node.attributes.delta.y + node.attributes.component.data.attributes.position.y,
+                node.attributes.delta.z + node.attributes.component.data.attributes.position.z),
+              domains: node.attributes.component.data.attributes.domains.data,
               size: node.attributes.size,
               weight: node.attributes.weight
             };

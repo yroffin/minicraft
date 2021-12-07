@@ -39,29 +39,16 @@
       ],
       "required": true
     },
-    "x": {
-      "pluginOptions": {},
-      "type": "float",
-      "required": true,
-      "default": 0
-    },
-    "y": {
-      "pluginOptions": {},
-      "type": "float",
-      "default": 0,
-      "required": true
-    },
-    "z": {
-      "pluginOptions": {},
-      "type": "float",
-      "default": 0,
-      "required": true
-    },
     "component": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::component.component",
       "inversedBy": "nodes"
+    },
+    "delta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "utils.vector"
     }
   }
 }

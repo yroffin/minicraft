@@ -16,9 +16,11 @@ export class MapAbstractNode {
 }
 
 export class MapComponent extends MapAbstractNode {
+    domains!: string[]
 }
 
 export class MapNode extends MapAbstractNode {
+    domains!: string[]
 }
 
 export class MapEdge {
@@ -26,4 +28,9 @@ export class MapEdge {
     name!: string;
     source!: string;
     target!: string;
+}
+
+export class MapDomain {
+    id!: string;
+    name!: string;
 }
