@@ -1,0 +1,16 @@
+<div class="renderCanvas">
+    <div class="p-grid">
+        <div class="p-col-1">
+            <h3>Zoom: {{zoom}}</h3>
+        </div>
+        <div class="p-col-10">
+            <div class="editor-2d-container" (click)="onCapture()">
+                <div class="hud">
+                    <div class="view-pos-x">X: {{x.toFixed(2)}} mm</div>
+                    <div class="view-pos-y">Z: {{y.toFixed(2)}} mm</div>
+                </div>
+                <canvas class="renderCanvas" #paperView resize></canvas>
+            </div>
+        </div>
+    </div>
+</div>

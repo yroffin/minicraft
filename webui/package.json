@@ -30,7 +30,8 @@
     "primeng": "12.2.1",
     "primeicons": "4.1.0",
     "pako": "2.0.4",
-    "mxgraphdata": "0.1.2"
+    "mxgraphdata": "0.1.2",
+    "paper": "0.12.15"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.8",

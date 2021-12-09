@@ -8,6 +8,7 @@ export enum MapItemType {
 
 export class MapAbstractNode {
     id!: string;
+    uid!: string;
     name!: string;
     size!: number;
     weight!: number;

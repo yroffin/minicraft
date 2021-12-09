@@ -10,6 +10,7 @@ import { RendererComponent } from './components/render/render.component';
 
 import { MenubarModule } from 'primeng/menubar';
 import { AnotherComponent } from './components/world/another/another.component';
+import { PaperComponent } from './components/paper/paper.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { AnotherComponent } from './components/world/another/another.component';
     WorldComponent,
     RendererComponent,
     AnotherComponent,
+    PaperComponent,
   ],
   imports: [
     BrowserModule,

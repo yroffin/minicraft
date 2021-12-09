@@ -1,17 +1,14 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { AbstractMesh, ActionManager, ArcRotateCamera, BoundingInfo, Color3, DynamicTexture, Engine, ExecuteCodeAction, HemisphericLight, Mesh, MeshBuilder, OimoJSPlugin, PhysicsImpostor, Scene, SceneLoader, Space, StandardMaterial, Vector3 } from 'babylonjs';
+import { AbstractMesh, ActionManager, ArcRotateCamera, Color3, DynamicTexture, Engine, ExecuteCodeAction, HemisphericLight, Matrix, Mesh, MeshBuilder, OimoJSPlugin, PhysicsImpostor, Scene, SceneLoader, Space, StandardMaterial, Vector3 } from 'babylonjs';
 import { AdvancedDynamicTexture, Ellipse, Line, Rectangle, TextBlock } from 'babylonjs-gui';
 import { OBJFileLoader, STLFileLoader, GLTFFileLoader } from 'babylonjs-loaders';
 import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as OIMO from 'oimo';
-import { Subject } from 'rxjs';
 import { Msg } from 'src/app/classes/component.interface';
-import { MapAbstractNode, MapComponent, MapEdge, MapItemType, MapNode } from 'src/app/classes/model.class';
+import { MapAbstractNode, MapItemType } from 'src/app/classes/model.class';
 import { BrowserService } from '../browser.service';
-import { ComponentService } from '../data/component.service';
-import { EdgeService } from '../data/edge.service';
-import { NodeService } from '../data/node.service';
+import { LoaderService, MapHelperGraph } from '../data/loader.service';
 import { LoadAssetService } from '../load-asset.service';
 
 export class MapHelperContext {
@@ -28,12 +25,6 @@ export class MapHelperContext {
   type: number = 2;
 }
 
-export class MapHelperGraph {
-  components: Array<MapComponent> = [];
-  nodes: Array<MapNode> = [];
-  edges: Array<MapEdge> = [];
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -44,9 +35,7 @@ export class MapHelperService {
   constructor(
     private readonly browserService: BrowserService,
     private readonly loadAssetService: LoadAssetService,
-    private readonly componentService: ComponentService,
-    private readonly nodeService: NodeService,
-    private readonly edgeService: EdgeService
+    private readonly loaderService: LoaderService
   ) {
     browserService.nativeWindow.CANNON = CANNON;
     SceneLoader.RegisterPlugin(new STLFileLoader());
@@ -90,6 +79,9 @@ export class MapHelperService {
       // Load the 3D engine
       context.engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false }, false);
       context.scene = new Scene(context.engine);
+      //context.scene.getViewMatrix = () => Matrix.RotationY(-Math.PI / 2);
+      //context.scene.getTransformMatrix = () => Matrix.Scaling(-1, 1, 1);
+      //context.scene.getProjectionMatrix = () => Matrix.Scaling(1, -1, 1);
 
       (async () => {
         switch (context.type) {
@@ -137,22 +129,7 @@ export class MapHelperService {
         }
       }, context.scene);
 
-      const world: MapHelperGraph = {
-        components: _.sortBy(_.filter(await this.componentService.findAll(), (component) => {
-          return _.find(component.domains, { id: domainId }) !== undefined
-        }), (component) => {
-          return component.position.z
-        }),
-        nodes: _.sortBy(_.filter(await this.nodeService.findAll(), node => {
-          return _.find(node.domains, { id: domainId }) !== undefined
-        }), (node) => {
-          return node.position.z
-        }),
-        edges: await this.edgeService.findAll()
-      }
-
-      console.log(world.components)
-      console.log(world.nodes)
+      const world: MapHelperGraph = await this.loaderService.loadWorld(domainId);
 
       // Draw this graph
       this.draw(context, world);
@@ -179,7 +156,7 @@ export class MapHelperService {
         let source = context.scene.getMeshByID(`${edge.source}`);
         let target = context.scene.getMeshByID(`${edge.target}`);
         if (source && target) {
-          let line = MeshBuilder.CreateLines("name", {
+          let line = MeshBuilder.CreateLines(`edge-${edge.source}-${edge.target}`, {
             points: [
               source.getBoundingInfo().boundingBox.centerWorld,
               target.getBoundingInfo().boundingBox.centerWorld
@@ -301,8 +278,8 @@ export class MapHelperService {
       })
 
       // Fix position
-      collider.translate(component.position, 1, Space.WORLD);
-      collider.setPivotPoint(collider.getBoundingInfo().boundingBox.center);
+      collider.translate(component.position, 1);
+      //collider.setPivotPoint(collider.getBoundingInfo().boundingBox.center);
 
       collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: component.weight, friction: 0.5, restitution: 0.7 }, context.scene);
       collider.isVisible = false;

@@ -68,6 +68,7 @@ export class ComponentService {
           resolve(_.flatMap<any, MapComponent>((<any>value).data.components.data, (component) => {
             return <MapComponent>{
               id: component.id,
+              uid: `component-${component.id}`,
               name: component.attributes.name,
               size: component.attributes.size,
               weight: component.attributes.weight,

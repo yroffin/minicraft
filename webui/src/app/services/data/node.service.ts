@@ -69,6 +69,7 @@ export class NodeService {
           resolve(_.flatMap<any, MapNode>((<any>value).data.nodes.data, (node) => {
             return <MapNode>{
               id: node.id,
+              uid: `node-${node.id}`,
               name: node.attributes.name,
               type: this.decode(node.attributes.type),
               position: new Vector3(

@@ -9,8 +9,12 @@ const routes: Routes = [
     component: WorldComponent
   },
   {
-    path: 'domains/:domainId',
+    path: 'craft/3d/domains/:domainId',
     component: WorldComponent
+  },
+  {
+    path: 'craft/2d/domains/:domainId',
+    component: AnotherComponent
   },
   {
     path: 'another',
