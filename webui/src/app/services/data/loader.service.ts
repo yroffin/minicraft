@@ -38,10 +38,6 @@ export class LoaderService {
         }),
         edges: await this.edgeService.findAll()
       }
-
-      console.log(world.components)
-      console.log(world.nodes)
-
       resolve(world);
     });
   }

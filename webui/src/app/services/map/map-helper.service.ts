@@ -249,8 +249,8 @@ export class MapHelperService {
       rect1.addControl(label);
 
       var target = new Ellipse();
-      target.width = "5px";
-      target.height = "5px";
+      target.width = "2px";
+      target.height = "2px";
       target.color = "Orange";
       target.thickness = 1;
       target.background = "green";

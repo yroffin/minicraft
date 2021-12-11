@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MapHelperService } from 'src/app/services/map/map-helper.service';
 import * as paper from 'paper';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-paper',
@@ -20,8 +21,76 @@ export class PaperComponent implements OnInit {
   y = 0;
   z = 0;
 
-  oldZoom = 1;
-  zoom = 1;
+  items: MenuItem[] = [
+    {
+      icon: 'pi pi-pencil',
+      command: () => {
+      }
+    },
+    {
+      icon: 'pi pi-refresh',
+      command: () => {
+      }
+    },
+    {
+      icon: 'pi pi-trash',
+      command: () => {
+      }
+    }
+  ];
+
+  context: MenuItem[] = [
+    {
+      icon: 'pi pi-pencil',
+      label: 'File',
+      command: () => {
+      }
+    },
+    {
+      icon: 'pi pi-refresh',
+      label: 'File',
+      command: () => {
+      }
+    },
+    {
+      icon: 'pi pi-trash',
+      label: 'File',
+      command: () => {
+      }
+    }
+  ];
+
+  _width: number = 0;
+  _height: number = 0;
+  _zoom: number = 2;
+
+  get zoom() {
+    return this._zoom;
+  }
+
+  @Input() set zoom(value: number) {
+    this.project.view.matrix.scale(1 / this._zoom, 1 / -this._zoom);
+    this.project.view.matrix.scale(value, -value);
+    this._zoom = value;
+  }
+
+  get abs() {
+    return this._width;
+  }
+
+  @Input() set abs(value: number) {
+    this.project.view.matrix.translate(this._width - value, 0);
+    this._width = value;
+  }
+
+  get ord() {
+    return this._height;
+  }
+
+  @Input() set ord(value: number) {
+    this.project.view.matrix.translate(0, this._height - value);
+    this._height = value;
+  }
 
   private scope!: paper.PaperScope;
   private project!: paper.Project;
@@ -51,44 +120,31 @@ export class PaperComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.project = new paper.Project(this.paperCanvas.nativeElement);
     const height = this.paperCanvas.nativeElement.offsetHeight;
     const width = this.paperCanvas.nativeElement.offsetWidth;
 
-    this.project = new paper.Project(this.paperCanvas.nativeElement);
-    this.project.view.center = new paper.Point(width / 8, height / 8);
-    //this.project.view.scale(this.zoom, this.zoom);
-    this.project.view.matrix = new paper.Matrix().translate(width / 2, height / 2).scale(2, 2)
+    this.project.view.matrix = new paper.Matrix();
+
+    // in order to avoid lyfecycle modification value
+    setTimeout(() => {
+      this._zoom = 2;
+      this._height = height / 2;
+      this._width = width / 2;
+      this.project.view.matrix.translate(this._width, this._height);
+      this.project.view.matrix.scale(this._zoom, this._zoom);
+      this.drawGrid(width, height, 10, 1);
+    }, 1);
 
     this.project.view.onMouseMove = (event: any) => {
       this.onMouseMove(event);
     };
 
-    this.project.activate();
-    this.drawGrid(width, height, 10, 1);
     this.ready.emit(this.project);
-    // Finalize view init in async
-    setTimeout(
-      () => {
-        //this.setZoom(3);
-      }, 100);
-  }
-
-  onZoomChange(event: any) {
-    this.setZoom(this.zoom);
   }
 
   onCapture() {
     if (this.shiftIsDown === false) { return; }
-  }
-
-  private setZoom(zoom: number) {
-    this.project.view.scale(1 / this.oldZoom, 1 / -this.oldZoom);
-    this.project.view.scale(zoom, -zoom);
-    this.oldZoom = zoom;
-    this.zoom = zoom;
-    const height = this.paperCanvas.nativeElement.offsetHeight;
-    const width = this.paperCanvas.nativeElement.offsetWidth;
-    this.project.view.center = new paper.Point(width / (this.zoom * 2.5), height / (this.zoom * 2));
   }
 
   private onMouseMove(event: any) {

@@ -5,6 +5,4 @@
 <button (click)="onClickMe()">Click me!</button>
 <button (click)="onFreezeMe()">On</button>
 <button (click)="onUnfreezeMe()">Off</button>
-<div style="width:100%;height:100%;float:none;">
-    <router-outlet (activate)='onActivate($event)'></router-outlet>
-</div>
+<router-outlet (activate)='onActivate($event)'></router-outlet>

@@ -1,16 +1,38 @@
-<div class="renderCanvas">
-    <div class="p-grid">
-        <div class="p-col-1">
-            <h3>Zoom: {{zoom}}</h3>
-        </div>
-        <div class="p-col-10">
-            <div class="editor-2d-container" (click)="onCapture()">
-                <div class="hud">
-                    <div class="view-pos-x">X: {{x.toFixed(2)}} mm</div>
-                    <div class="view-pos-y">Z: {{y.toFixed(2)}} mm</div>
-                </div>
-                <canvas class="renderCanvas" #paperView resize></canvas>
+<div class="grid">
+    <div class="col-1">
+        <div class="box">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
+                <input type="text" [(ngModel)]="x" pInputText placeholder="Username">
+                <span class="p-inputgroup-addon">mm</span>
             </div>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
+                <input type="text" [(ngModel)]="y" pInputText placeholder="Username">
+                <span class="p-inputgroup-addon">mm</span>
+            </div>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
+                <input type="text" [(ngModel)]="abs" pInputText placeholder="Username">
+                <span class="p-inputgroup-addon">mm</span>
+            </div>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
+                <input type="text" [(ngModel)]="ord" pInputText placeholder="Username">
+                <span class="p-inputgroup-addon">mm</span>
+            </div>
+            <p-speedDial [model]="items" direction="right"></p-speedDial>
         </div>
+    </div>
+    <div class="col">
+        <div class="box">
+            <p-contextMenu [global]="false" [target]="paperView" [model]="context"></p-contextMenu>
+            <canvas class="fill" #paperView resize></canvas>
+        </div>
+    </div>
+    <div class="col-1">
+        <p-knob [(ngModel)]="zoom" [min]="1" [max]="20"></p-knob>
+        <p-slider [(ngModel)]="abs" [min]="-1000" [max]="1600"></p-slider>
+        <p-slider [(ngModel)]="ord" orientation="vertical" [min]="-1000" [max]="1600"></p-slider>
     </div>
 </div>
