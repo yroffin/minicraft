@@ -1,6 +1,6 @@
 {
   "paths": {
-    "/graphs": {
+    "/assets": {
       "get": {
         "responses": {
           "200": {
@@ -19,56 +19,56 @@
                           "attributes": {
                             "type": "object",
                             "properties": {
-                              "name": {
+                              "data": {
                                 "type": "string"
                               },
-                              "position": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "x": {
-                                    "type": "number",
-                                    "format": "float"
-                                  },
-                                  "y": {
-                                    "type": "number",
-                                    "format": "float"
-                                  },
-                                  "z": {
-                                    "type": "number",
-                                    "format": "float"
-                                  }
-                                }
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "mxgraph"
+                                ]
                               },
-                              "asset": {
+                              "graphs": {
                                 "type": "object",
                                 "properties": {
                                   "data": {
-                                    "type": "object",
-                                    "properties": {
-                                      "id": {
-                                        "type": "string"
-                                      },
-                                      "attributes": {
-                                        "type": "object",
-                                        "properties": {
-                                          "data": {
-                                            "type": "string"
-                                          },
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "mxgraph"
-                                            ]
-                                          },
-                                          "graphs": {
-                                            "type": "object",
-                                            "properties": {
-                                              "data": {
-                                                "type": "array",
-                                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string"
+                                        },
+                                        "attributes": {
+                                          "type": "object",
+                                          "properties": {
+                                            "name": {
+                                              "type": "string"
+                                            },
+                                            "position": {
+                                              "type": "object",
+                                              "properties": {
+                                                "id": {
+                                                  "type": "string"
+                                                },
+                                                "x": {
+                                                  "type": "number",
+                                                  "format": "float"
+                                                },
+                                                "y": {
+                                                  "type": "number",
+                                                  "format": "float"
+                                                },
+                                                "z": {
+                                                  "type": "number",
+                                                  "format": "float"
+                                                }
+                                              }
+                                            },
+                                            "asset": {
+                                              "type": "object",
+                                              "properties": {
+                                                "data": {
                                                   "type": "object",
                                                   "properties": {
                                                     "id": {
@@ -77,41 +77,30 @@
                                                     "attributes": {
                                                       "type": "object",
                                                       "properties": {
-                                                        "name": {
+                                                        "data": {
                                                           "type": "string"
                                                         },
-                                                        "position": {
-                                                          "type": "object",
-                                                          "properties": {
-                                                            "id": {
-                                                              "type": "string"
-                                                            },
-                                                            "x": {
-                                                              "type": "number",
-                                                              "format": "float"
-                                                            },
-                                                            "y": {
-                                                              "type": "number",
-                                                              "format": "float"
-                                                            },
-                                                            "z": {
-                                                              "type": "number",
-                                                              "format": "float"
-                                                            }
-                                                          }
+                                                        "type": {
+                                                          "type": "string",
+                                                          "enum": [
+                                                            "mxgraph"
+                                                          ]
                                                         },
-                                                        "asset": {
+                                                        "graphs": {
                                                           "type": "object",
                                                           "properties": {
                                                             "data": {
-                                                              "type": "object",
-                                                              "properties": {
-                                                                "id": {
-                                                                  "type": "string"
-                                                                },
-                                                                "attributes": {
-                                                                  "type": "object",
-                                                                  "properties": {}
+                                                              "type": "array",
+                                                              "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                  "id": {
+                                                                    "type": "string"
+                                                                  },
+                                                                  "attributes": {
+                                                                    "type": "object",
+                                                                    "properties": {}
+                                                                  }
                                                                 }
                                                               }
                                                             }
@@ -415,45 +404,45 @@
                                                   }
                                                 }
                                               }
-                                            }
-                                          },
-                                          "createdAt": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                          },
-                                          "updatedAt": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                          },
-                                          "createdBy": {
-                                            "type": "object",
-                                            "properties": {
-                                              "data": {
-                                                "type": "object",
-                                                "properties": {
-                                                  "id": {
-                                                    "type": "string"
-                                                  },
-                                                  "attributes": {
-                                                    "type": "object",
-                                                    "properties": {}
+                                            },
+                                            "createdAt": {
+                                              "type": "string",
+                                              "format": "date-time"
+                                            },
+                                            "updatedAt": {
+                                              "type": "string",
+                                              "format": "date-time"
+                                            },
+                                            "createdBy": {
+                                              "type": "object",
+                                              "properties": {
+                                                "data": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "id": {
+                                                      "type": "string"
+                                                    },
+                                                    "attributes": {
+                                                      "type": "object",
+                                                      "properties": {}
+                                                    }
                                                   }
                                                 }
                                               }
-                                            }
-                                          },
-                                          "updatedBy": {
-                                            "type": "object",
-                                            "properties": {
-                                              "data": {
-                                                "type": "object",
-                                                "properties": {
-                                                  "id": {
-                                                    "type": "string"
-                                                  },
-                                                  "attributes": {
-                                                    "type": "object",
-                                                    "properties": {}
+                                            },
+                                            "updatedBy": {
+                                              "type": "object",
+                                              "properties": {
+                                                "data": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "id": {
+                                                      "type": "string"
+                                                    },
+                                                    "attributes": {
+                                                      "type": "object",
+                                                      "properties": {}
+                                                    }
                                                   }
                                                 }
                                               }
@@ -687,7 +676,7 @@
           }
         },
         "tags": [
-          "Graph"
+          "Asset"
         ],
         "parameters": [
           {
@@ -789,56 +778,56 @@
                         "attributes": {
                           "type": "object",
                           "properties": {
-                            "name": {
+                            "data": {
                               "type": "string"
                             },
-                            "position": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "x": {
-                                  "type": "number",
-                                  "format": "float"
-                                },
-                                "y": {
-                                  "type": "number",
-                                  "format": "float"
-                                },
-                                "z": {
-                                  "type": "number",
-                                  "format": "float"
-                                }
-                              }
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "mxgraph"
+                              ]
                             },
-                            "asset": {
+                            "graphs": {
                               "type": "object",
                               "properties": {
                                 "data": {
-                                  "type": "object",
-                                  "properties": {
-                                    "id": {
-                                      "type": "string"
-                                    },
-                                    "attributes": {
-                                      "type": "object",
-                                      "properties": {
-                                        "data": {
-                                          "type": "string"
-                                        },
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "mxgraph"
-                                          ]
-                                        },
-                                        "graphs": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "array",
-                                              "items": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "attributes": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "type": "string"
+                                          },
+                                          "position": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
+                                                "type": "string"
+                                              },
+                                              "x": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "y": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "z": {
+                                                "type": "number",
+                                                "format": "float"
+                                              }
+                                            }
+                                          },
+                                          "asset": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
                                                 "type": "object",
                                                 "properties": {
                                                   "id": {
@@ -847,41 +836,30 @@
                                                   "attributes": {
                                                     "type": "object",
                                                     "properties": {
-                                                      "name": {
+                                                      "data": {
                                                         "type": "string"
                                                       },
-                                                      "position": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                          "id": {
-                                                            "type": "string"
-                                                          },
-                                                          "x": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          },
-                                                          "y": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          },
-                                                          "z": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          }
-                                                        }
+                                                      "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "mxgraph"
+                                                        ]
                                                       },
-                                                      "asset": {
+                                                      "graphs": {
                                                         "type": "object",
                                                         "properties": {
                                                           "data": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                              "id": {
-                                                                "type": "string"
-                                                              },
-                                                              "attributes": {
-                                                                "type": "object",
-                                                                "properties": {}
+                                                            "type": "array",
+                                                            "items": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
                                                               }
                                                             }
                                                           }
@@ -1185,45 +1163,45 @@
                                                 }
                                               }
                                             }
-                                          }
-                                        },
-                                        "createdAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        },
-                                        "updatedAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        },
-                                        "createdBy": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "object",
-                                              "properties": {
-                                                "id": {
-                                                  "type": "string"
-                                                },
-                                                "attributes": {
-                                                  "type": "object",
-                                                  "properties": {}
+                                          },
+                                          "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                          },
+                                          "updatedAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                          },
+                                          "createdBy": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {}
+                                                  }
                                                 }
                                               }
                                             }
-                                          }
-                                        },
-                                        "updatedBy": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "object",
-                                              "properties": {
-                                                "id": {
-                                                  "type": "string"
-                                                },
-                                                "attributes": {
-                                                  "type": "object",
-                                                  "properties": {}
+                                          },
+                                          "updatedBy": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {}
+                                                  }
                                                 }
                                               }
                                             }
@@ -1436,7 +1414,7 @@
           }
         },
         "tags": [
-          "Graph"
+          "Asset"
         ],
         "parameters": [],
         "requestBody": {
@@ -1448,25 +1426,11 @@
                   "data": {
                     "type": "object",
                     "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "position": {
-                        "type": "object",
-                        "properties": {
-                          "x": {
-                            "type": "number",
-                            "format": "float"
-                          },
-                          "y": {
-                            "type": "number",
-                            "format": "float"
-                          },
-                          "z": {
-                            "type": "number",
-                            "format": "float"
-                          }
-                        }
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "mxgraph"
+                        ]
                       }
                     }
                   }
@@ -1477,7 +1441,7 @@
         }
       }
     },
-    "/graphs/{id}": {
+    "/assets/{id}": {
       "get": {
         "responses": {
           "200": {
@@ -1494,56 +1458,56 @@
                         "attributes": {
                           "type": "object",
                           "properties": {
-                            "name": {
+                            "data": {
                               "type": "string"
                             },
-                            "position": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "x": {
-                                  "type": "number",
-                                  "format": "float"
-                                },
-                                "y": {
-                                  "type": "number",
-                                  "format": "float"
-                                },
-                                "z": {
-                                  "type": "number",
-                                  "format": "float"
-                                }
-                              }
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "mxgraph"
+                              ]
                             },
-                            "asset": {
+                            "graphs": {
                               "type": "object",
                               "properties": {
                                 "data": {
-                                  "type": "object",
-                                  "properties": {
-                                    "id": {
-                                      "type": "string"
-                                    },
-                                    "attributes": {
-                                      "type": "object",
-                                      "properties": {
-                                        "data": {
-                                          "type": "string"
-                                        },
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "mxgraph"
-                                          ]
-                                        },
-                                        "graphs": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "array",
-                                              "items": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "attributes": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "type": "string"
+                                          },
+                                          "position": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
+                                                "type": "string"
+                                              },
+                                              "x": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "y": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "z": {
+                                                "type": "number",
+                                                "format": "float"
+                                              }
+                                            }
+                                          },
+                                          "asset": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
                                                 "type": "object",
                                                 "properties": {
                                                   "id": {
@@ -1552,41 +1516,30 @@
                                                   "attributes": {
                                                     "type": "object",
                                                     "properties": {
-                                                      "name": {
+                                                      "data": {
                                                         "type": "string"
                                                       },
-                                                      "position": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                          "id": {
-                                                            "type": "string"
-                                                          },
-                                                          "x": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          },
-                                                          "y": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          },
-                                                          "z": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          }
-                                                        }
+                                                      "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "mxgraph"
+                                                        ]
                                                       },
-                                                      "asset": {
+                                                      "graphs": {
                                                         "type": "object",
                                                         "properties": {
                                                           "data": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                              "id": {
-                                                                "type": "string"
-                                                              },
-                                                              "attributes": {
-                                                                "type": "object",
-                                                                "properties": {}
+                                                            "type": "array",
+                                                            "items": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
                                                               }
                                                             }
                                                           }
@@ -1890,45 +1843,45 @@
                                                 }
                                               }
                                             }
-                                          }
-                                        },
-                                        "createdAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        },
-                                        "updatedAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        },
-                                        "createdBy": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "object",
-                                              "properties": {
-                                                "id": {
-                                                  "type": "string"
-                                                },
-                                                "attributes": {
-                                                  "type": "object",
-                                                  "properties": {}
+                                          },
+                                          "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                          },
+                                          "updatedAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                          },
+                                          "createdBy": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {}
+                                                  }
                                                 }
                                               }
                                             }
-                                          }
-                                        },
-                                        "updatedBy": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "object",
-                                              "properties": {
-                                                "id": {
-                                                  "type": "string"
-                                                },
-                                                "attributes": {
-                                                  "type": "object",
-                                                  "properties": {}
+                                          },
+                                          "updatedBy": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {}
+                                                  }
                                                 }
                                               }
                                             }
@@ -2141,7 +2094,7 @@
           }
         },
         "tags": [
-          "Graph"
+          "Asset"
         ],
         "parameters": [
           {
@@ -2173,56 +2126,56 @@
                         "attributes": {
                           "type": "object",
                           "properties": {
-                            "name": {
+                            "data": {
                               "type": "string"
                             },
-                            "position": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "x": {
-                                  "type": "number",
-                                  "format": "float"
-                                },
-                                "y": {
-                                  "type": "number",
-                                  "format": "float"
-                                },
-                                "z": {
-                                  "type": "number",
-                                  "format": "float"
-                                }
-                              }
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "mxgraph"
+                              ]
                             },
-                            "asset": {
+                            "graphs": {
                               "type": "object",
                               "properties": {
                                 "data": {
-                                  "type": "object",
-                                  "properties": {
-                                    "id": {
-                                      "type": "string"
-                                    },
-                                    "attributes": {
-                                      "type": "object",
-                                      "properties": {
-                                        "data": {
-                                          "type": "string"
-                                        },
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "mxgraph"
-                                          ]
-                                        },
-                                        "graphs": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "array",
-                                              "items": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "attributes": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "type": "string"
+                                          },
+                                          "position": {
+                                            "type": "object",
+                                            "properties": {
+                                              "id": {
+                                                "type": "string"
+                                              },
+                                              "x": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "y": {
+                                                "type": "number",
+                                                "format": "float"
+                                              },
+                                              "z": {
+                                                "type": "number",
+                                                "format": "float"
+                                              }
+                                            }
+                                          },
+                                          "asset": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
                                                 "type": "object",
                                                 "properties": {
                                                   "id": {
@@ -2231,41 +2184,30 @@
                                                   "attributes": {
                                                     "type": "object",
                                                     "properties": {
-                                                      "name": {
+                                                      "data": {
                                                         "type": "string"
                                                       },
-                                                      "position": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                          "id": {
-                                                            "type": "string"
-                                                          },
-                                                          "x": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          },
-                                                          "y": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          },
-                                                          "z": {
-                                                            "type": "number",
-                                                            "format": "float"
-                                                          }
-                                                        }
+                                                      "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "mxgraph"
+                                                        ]
                                                       },
-                                                      "asset": {
+                                                      "graphs": {
                                                         "type": "object",
                                                         "properties": {
                                                           "data": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                              "id": {
-                                                                "type": "string"
-                                                              },
-                                                              "attributes": {
-                                                                "type": "object",
-                                                                "properties": {}
+                                                            "type": "array",
+                                                            "items": {
+                                                              "type": "object",
+                                                              "properties": {
+                                                                "id": {
+                                                                  "type": "string"
+                                                                },
+                                                                "attributes": {
+                                                                  "type": "object",
+                                                                  "properties": {}
+                                                                }
                                                               }
                                                             }
                                                           }
@@ -2569,45 +2511,45 @@
                                                 }
                                               }
                                             }
-                                          }
-                                        },
-                                        "createdAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        },
-                                        "updatedAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        },
-                                        "createdBy": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "object",
-                                              "properties": {
-                                                "id": {
-                                                  "type": "string"
-                                                },
-                                                "attributes": {
-                                                  "type": "object",
-                                                  "properties": {}
+                                          },
+                                          "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                          },
+                                          "updatedAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                          },
+                                          "createdBy": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {}
+                                                  }
                                                 }
                                               }
                                             }
-                                          }
-                                        },
-                                        "updatedBy": {
-                                          "type": "object",
-                                          "properties": {
-                                            "data": {
-                                              "type": "object",
-                                              "properties": {
-                                                "id": {
-                                                  "type": "string"
-                                                },
-                                                "attributes": {
-                                                  "type": "object",
-                                                  "properties": {}
+                                          },
+                                          "updatedBy": {
+                                            "type": "object",
+                                            "properties": {
+                                              "data": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "id": {
+                                                    "type": "string"
+                                                  },
+                                                  "attributes": {
+                                                    "type": "object",
+                                                    "properties": {}
+                                                  }
                                                 }
                                               }
                                             }
@@ -2820,7 +2762,7 @@
           }
         },
         "tags": [
-          "Graph"
+          "Asset"
         ],
         "parameters": [
           {
@@ -2843,36 +2785,28 @@
                   "data": {
                     "type": "object",
                     "properties": {
-                      "name": {
+                      "data": {
                         "type": "string"
                       },
-                      "position": {
-                        "type": "object",
-                        "properties": {
-                          "x": {
-                            "type": "number",
-                            "format": "float"
-                          },
-                          "y": {
-                            "type": "number",
-                            "format": "float"
-                          },
-                          "z": {
-                            "type": "number",
-                            "format": "float"
-                          }
-                        }
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "mxgraph"
+                        ]
                       },
-                      "asset": {
-                        "oneOf": [
-                          {
-                            "type": "integer"
-                          },
-                          {
-                            "type": "string"
-                          }
-                        ],
-                        "example": "string or id"
+                      "graphs": {
+                        "type": "array",
+                        "items": {
+                          "oneOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ],
+                          "example": "string or id"
+                        }
                       },
                       "createdAt": {
                         "type": "string",
@@ -3071,7 +3005,7 @@
           }
         },
         "tags": [
-          "Graph"
+          "Asset"
         ],
         "parameters": [
           {

@@ -31,11 +31,17 @@ export class GraphService {
                 id
                 attributes {
                   name
-                  type
                   position {
                     x y z
                   }
-                  data
+                  asset {
+                    data {
+                      attributes {
+                        type
+                        data
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -46,8 +52,8 @@ export class GraphService {
             return <MapMxGraph>{
               id: mxgraph.id,
               name: mxgraph.attributes.name,
-              type: this.decode(mxgraph.attributes.type),
-              data: mxgraph.attributes.data,
+              type: this.decode(mxgraph.attributes.asset.data.attributes.type),
+              data: mxgraph.attributes.asset.data.attributes.data,
               position: new Vector3(
                 mxgraph.attributes.position.x,
                 mxgraph.attributes.position.y,

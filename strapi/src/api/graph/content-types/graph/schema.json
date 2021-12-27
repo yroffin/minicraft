@@ -23,17 +23,11 @@
       "component": "utils.vector",
       "required": true
     },
-    "type": {
-      "type": "enumeration",
-      "enum": [
-        "mxgraph"
-      ],
-      "required": true,
-      "default": "mxgraph"
-    },
-    "data": {
-      "type": "text",
-      "required": true
+    "asset": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::asset.asset",
+      "inversedBy": "graphs"
     }
   }
 }

@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "assets",
+  "info": {
+    "singularName": "asset",
+    "pluralName": "assets",
+    "displayName": "asset",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "data": {
+      "type": "text"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "mxgraph"
+      ],
+      "default": "mxgraph",
+      "required": true
+    },
+    "graphs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::graph.graph",
+      "mappedBy": "asset"
+    }
+  }
+}
