@@ -16,109 +16,121 @@ export class LoadAssetService {
   constructor(private graphService: GraphService, private http: HttpClient) {
   }
 
-  loadModelFromApi(asset: string): Promise<MapHelperGraph> {
-    return new Promise<MapHelperGraph>((resolve) => {
+  loadModelFromApi(domainId: string): Promise<MapHelperGraph[]> {
+    return new Promise<MapHelperGraph[]>((resolve) => {
       (async () => {
         // Load from mxgraph store on api side
         let graphData = await this.graphService.findAll();
-        let graph = graphData[0];
-        let model = await this.loadDrawIoFromApi(graph.data);
-        console.log(model);
-
-        const world: MapHelperGraph = {
-          components: [],
-          nodes: [],
-          edges: []
-        };
-
-        if (model.root && model.root.mxObject) {
-          world.components = _.flatMap(_.filter(model.root.mxObject, (_mxObject) => {
-            // Component must have _component property
-            return _mxObject.component != undefined
-          }), (_mxObject) => {
-            return <MapComponent>{
-              id: _mxObject.id,
-              uid: `component-${_mxObject.id}`,
-              name: _mxObject.label,
-              parent: _mxObject.mxCell.parent,
-              width: _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.width : 10,
-              height: _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.height : 10,
-              weight: 0,
-              type: MapItemType.cube,
-              domains: [{
-                "id": "1"
-              }],
-              position: new Vector3(
-                _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.x : 0,
-                0,
-                _mxObject.mxCell.mxGeometry ? -_mxObject.mxCell.mxGeometry.y : 0)
-            };
-          });
-        }
-
-        // Iterate on each component
-        world.nodes = _.flatMap(world.components, (_component) => {
-          let _mxObjects = _.filter(model.root.mxObject, (_mxObject) => {
-            return _mxObject.mxCell
-              && _mxObject.id !== _component.id
-              && _mxObject.mxCell.id !== _component.id
-              && _mxObject.mxCell.parent === _component.parent
-          });
-          _component.nodes = _.flatMap(_mxObjects, (_mxObject) => {
-            // Each cell must have a value
-            if (_mxObject.mxCell.value === undefined) {
-              console.error(`Cell ${_mxObject.mxCell.id} must have a value`);
-              throw `Cell ${_mxObject.mxCell.id} must have a value`;
-            }
-            return this.buildNode(_mxObject);
-          });
-
-          // Build edge
-          world.edges = _.flatMap(_.filter(model.root.mxObject, (_mxObject) => {
-            return _mxObject.mxCell.edge
-          }), (_mxObject) => {
-            return this.buildEdge(_mxObject);
-          });
-
-          // Find parent
-          let _mxParent = _.filter(model.root.mxObject, (_mxObject) => {
-            return _mxObject
-              && _mxObject.id === _component.parent
-          });
-          if (_mxParent.length !== 1) {
-            console.error(`No parent ${_component.parent} found`);
-            throw `No parent ${_component.parent} found`;
-          }
-          _component.holder = this.buildNode(_mxParent[0]);
-
-          // Distribute each element threw position
-          _.each((_component.nodes), (_node) => {
-            _node.position.x += _component.holder.position.x + _node.width / 2;
-            _node.position.y += _component.holder.position.y;
-            _node.position.z += _component.holder.position.z - _node.height / 2;
-            _node.position.x += graph.position.x;
-            _node.position.y += graph.position.y;
-            _node.position.z += -graph.position.z;
-          });
-          _component.position.x += _component.holder.position.x + _component.width / 2;
-          _component.position.y += _component.holder.position.y;
-          _component.position.z += _component.holder.position.z - _component.height / 2;
-          _component.position.x += graph.position.x;
-          _component.position.y += graph.position.y;
-          _component.position.z += -graph.position.z;
-
-          return _component.nodes;
+        let domainGraph = _.filter(graphData, (data) => {
+          return _.findIndex(data.domains, (domain: any) => {
+            return domain.id === domainId;
+          }) >= 0
         });
+        // Iterate on graph data
+        let worlds = _.flatMap(domainGraph, async (graph) => {
+          let model = await this.loadDrawIoFromApi(graph.data);
+          console.log(graph);
+          console.log(model);
 
-        resolve(world);
+          const world: MapHelperGraph = {
+            components: [],
+            nodes: [],
+            edges: []
+          };
+
+          if (model.root && model.root.mxObject) {
+            world.components = _.flatMap(_.filter(model.root.mxObject, (_mxObject) => {
+              // Component must have _component property
+              return _mxObject.component != undefined
+            }), (_mxObject) => {
+              return <MapComponent>{
+                id: _mxObject.id,
+                uid: `component-${_mxObject.id}`,
+                name: _mxObject.label,
+                parent: _mxObject.mxCell.parent,
+                width: _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.width : 10,
+                height: _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.height : 10,
+                weight: 0,
+                type: MapItemType.cube,
+                domains: [{
+                  "id": domainId
+                }],
+                position: new Vector3(
+                  _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.x : 0,
+                  0,
+                  _mxObject.mxCell.mxGeometry ? -_mxObject.mxCell.mxGeometry.y : 0)
+              };
+            });
+          }
+
+          // Iterate on each component
+          world.nodes = _.flatMap(world.components, (_component) => {
+            let _mxObjects = _.filter(model.root.mxObject, (_mxObject) => {
+              return _mxObject.mxCell
+                && _mxObject.id !== _component.id
+                && _mxObject.mxCell.id !== _component.id
+                && _mxObject.mxCell.parent === _component.parent
+            });
+            _component.nodes = _.flatMap(_mxObjects, (_mxObject) => {
+              // Each cell must have a value
+              if (_mxObject.mxCell.value === undefined) {
+                console.error(`Cell ${_mxObject.mxCell.id} must have a value`);
+                throw `Cell ${_mxObject.mxCell.id} must have a value`;
+              }
+              return this.buildNode(graph.id, _mxObject);
+            });
+
+            // Build edge
+            world.edges = _.flatMap(_.filter(model.root.mxObject, (_mxObject) => {
+              return _mxObject.mxCell.edge
+            }), (_mxObject) => {
+              return this.buildEdge(graph.id, _mxObject);
+            });
+
+            // Find parent
+            let _mxParent = _.filter(model.root.mxObject, (_mxObject) => {
+              return _mxObject
+                && _mxObject.id === _component.parent
+            });
+            if (_mxParent.length !== 1) {
+              console.error(`No parent ${_component.parent} found`);
+              throw `No parent ${_component.parent} found`;
+            }
+            _component.holder = this.buildNode(graph.id, _mxParent[0]);
+
+            // Distribute each element threw position
+            _.each((_component.nodes), (_node) => {
+              _node.position.x += _component.holder.position.x + _node.width / 2;
+              _node.position.y += _component.holder.position.y;
+              _node.position.z += _component.holder.position.z - _node.height / 2;
+              _node.position.x += graph.position.x;
+              _node.position.y += graph.position.y;
+              _node.position.z += -graph.position.z;
+            });
+            _component.position.x += _component.holder.position.x + _component.width / 2;
+            _component.position.y += _component.holder.position.y;
+            _component.position.z += _component.holder.position.z - _component.height / 2;
+            _component.position.x += graph.position.x;
+            _component.position.y += graph.position.y;
+            _component.position.z += -graph.position.z;
+
+            return _component.nodes;
+          });
+
+          return world;
+        });
+        let result = await Promise.all(worlds);
+
+        resolve(result);
       })();
     });
   }
 
-  buildNode(_mxObject: any): MapNode {
+  buildNode(prefix: string, _mxObject: any): MapNode {
+    let id = _mxObject.mxCell.id ? _mxObject.mxCell.id : _mxObject.id;
     return <MapNode>{
-      id: _mxObject.mxCell.id ? _mxObject.mxCell.id : _mxObject.id,
-      uid: `node-${_mxObject.mxCell.id ? _mxObject.mxCell.id : _mxObject.id}`,
+      id: `${prefix}-${id}`,
+      uid: `node-${prefix}-${id}`,
       name: _mxObject.mxCell.value,
       parent: _mxObject.mxCell.parent,
       width: _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.width : 10,
@@ -135,12 +147,13 @@ export class LoadAssetService {
     };
   }
 
-  buildEdge(_mxObject: any): MapEdge {
+  buildEdge(prefix: string, _mxObject: any): MapEdge {
+    let id = _mxObject.mxCell.id ? _mxObject.mxCell.id : _mxObject.id;
     return <MapEdge>{
-      id: _mxObject.mxCell.id ? _mxObject.mxCell.id : _mxObject.id,
+      id: `${prefix}-${id}`,
       name: _mxObject.mxCell.value,
-      source: 'node-' + _mxObject.mxCell.source,
-      target: 'node-' + _mxObject.mxCell.target
+      source: `node-${prefix}-` + _mxObject.mxCell.source,
+      target: `node-${prefix}-` + _mxObject.mxCell.target
     };
   }
 

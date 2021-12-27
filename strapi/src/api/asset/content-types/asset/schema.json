@@ -23,6 +23,11 @@
       "default": "mxgraph",
       "required": true
     },
+    "name": {
+      "type": "string",
+      "required": true,
+      "default": "Default"
+    },
     "graphs": {
       "type": "relation",
       "relation": "oneToMany",

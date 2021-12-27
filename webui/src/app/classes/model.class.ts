@@ -72,6 +72,7 @@ export class MapMxGraph {
     id!: string;
     name!: string;
     position!: Vector3;
+    domains!: any;
     type!: MapGraphType;
     data!: string;
 }

@@ -129,11 +129,13 @@ export class MapHelperService {
         }
       }, context.scene);
 
-      const worldFromMxGraph = await this.loadAssetService.loadModelFromApi("");
-      console.log(worldFromMxGraph);
+      const worldFromMxGraphs = await this.loadAssetService.loadModelFromApi(domainId);
+      console.log(worldFromMxGraphs);
 
       // Draw this graph
-      this.draw(context, worldFromMxGraph);
+      _.each(worldFromMxGraphs, (worldFromMxGraph) => {
+        this.draw(context, worldFromMxGraph);
+      });
 
       resolve(context);
     });

@@ -23,6 +23,12 @@
       "component": "utils.vector",
       "required": true
     },
+    "domains": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::domain.domain",
+      "inversedBy": "graphs"
+    },
     "asset": {
       "type": "relation",
       "relation": "manyToOne",

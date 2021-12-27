@@ -20,6 +20,12 @@
       "relation": "manyToMany",
       "target": "api::component.component",
       "inversedBy": "domains"
+    },
+    "graphs": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::graph.graph",
+      "mappedBy": "domains"
     }
   }
 }

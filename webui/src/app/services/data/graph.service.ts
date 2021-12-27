@@ -34,6 +34,11 @@ export class GraphService {
                   position {
                     x y z
                   }
+                  domains {
+                    data {
+                      id
+                    }
+                  }
                   asset {
                     data {
                       attributes {
@@ -53,6 +58,9 @@ export class GraphService {
               id: mxgraph.id,
               name: mxgraph.attributes.name,
               type: this.decode(mxgraph.attributes.asset.data.attributes.type),
+              domains: _.flatMap(mxgraph.attributes.domains.data, (domain) => {
+                return domain;
+              }),
               data: mxgraph.attributes.asset.data.attributes.data,
               position: new Vector3(
                 mxgraph.attributes.position.x,
