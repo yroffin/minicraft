@@ -77,7 +77,8 @@ export class NodeService {
                 node.attributes.delta.y + node.attributes.component.data.attributes.position.y,
                 node.attributes.delta.z + node.attributes.component.data.attributes.position.z),
               domains: node.attributes.component.data.attributes.domains.data,
-              size: node.attributes.size,
+              width: node.attributes.width,
+              height: node.attributes.height,
               weight: node.attributes.weight
             };
           }));

@@ -60,9 +60,18 @@ export class PaperComponent implements OnInit {
     }
   ];
 
+  _elements: any[] = [];
   _width: number = 0;
   _height: number = 0;
   _zoom: number = 2;
+
+  get elements() {
+    return this._elements;
+  }
+
+  @Input() set elements(values: any[]) {
+    this._elements = values;
+  }
 
   get zoom() {
     return this._zoom;
@@ -93,12 +102,19 @@ export class PaperComponent implements OnInit {
   }
 
   private scope!: paper.PaperScope;
-  private project!: paper.Project;
+  public project!: paper.Project;
+  private layer!: paper.Layer;
+  private droppable!: any;
 
   shiftIsDown = false;
 
   @Output() flag: EventEmitter<any> = new EventEmitter();
   @Output() ready: EventEmitter<any> = new EventEmitter();
+
+  @Output() dragStart: EventEmitter<any> = new EventEmitter();
+  @Output() dropTarget: EventEmitter<any> = new EventEmitter();
+  @Output() dragEnd: EventEmitter<any> = new EventEmitter();
+  @Output() dropCreate: EventEmitter<any> = new EventEmitter();
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
@@ -125,22 +141,48 @@ export class PaperComponent implements OnInit {
     const width = this.paperCanvas.nativeElement.offsetWidth;
 
     this.project.view.matrix = new paper.Matrix();
+    this.layer = new paper.Layer({
+    });
 
     // in order to avoid lyfecycle modification value
     setTimeout(() => {
+      this.layer.activate();
       this._zoom = 2;
       this._height = height / 2;
       this._width = width / 2;
       this.project.view.matrix.translate(this._width, this._height);
       this.project.view.matrix.scale(this._zoom, this._zoom);
       this.drawGrid(width, height, 10, 1);
+      this.ready.emit(this.project);
     }, 1);
 
     this.project.view.onMouseMove = (event: any) => {
       this.onMouseMove(event);
     };
 
-    this.ready.emit(this.project);
+    this.project.view.onMouseDrag = (event: any) => {
+      this.onMouseDrag(event);
+    };
+  }
+
+  _dragStart(target: any) {
+    this.droppable = target;
+    this.dragStart.emit({
+      target
+    });
+  }
+
+  _drop(event: any) {
+    this.dropTarget.emit({
+      event: event,
+      target: this.droppable
+    });
+  }
+
+  _dragEnd() {
+    this.dragEnd.emit({
+      target: this.droppable
+    });
   }
 
   onCapture() {
@@ -148,6 +190,20 @@ export class PaperComponent implements OnInit {
   }
 
   private onMouseMove(event: any) {
+    this.x = event.point.x;
+    this.y = event.point.y;
+    this.cdr.detectChanges();
+    if (this.droppable) {
+      this.dropCreate.emit({
+        event: event,
+        target: this.droppable
+      });
+      this.droppable = undefined;
+    }
+    return false;
+  }
+
+  private onMouseDrag(event: any) {
     this.x = event.point.x;
     this.y = event.point.y;
     this.cdr.detectChanges();

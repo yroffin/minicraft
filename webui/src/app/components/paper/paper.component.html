@@ -3,22 +3,22 @@
         <div class="box">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
-                <input type="text" [(ngModel)]="x" pInputText placeholder="Username">
+                <input type="text" [(ngModel)]="x" pInputText placeholder="0.00">
                 <span class="p-inputgroup-addon">mm</span>
             </div>
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
-                <input type="text" [(ngModel)]="y" pInputText placeholder="Username">
+                <input type="text" [(ngModel)]="y" pInputText placeholder="0.00">
                 <span class="p-inputgroup-addon">mm</span>
             </div>
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
-                <input type="text" [(ngModel)]="abs" pInputText placeholder="Username">
+                <input type="text" [(ngModel)]="abs" pInputText placeholder="0.00">
                 <span class="p-inputgroup-addon">mm</span>
             </div>
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon"><i class="pi pi-tags"></i></span>
-                <input type="text" [(ngModel)]="ord" pInputText placeholder="Username">
+                <input type="text" [(ngModel)]="ord" pInputText placeholder="0.00">
                 <span class="p-inputgroup-addon">mm</span>
             </div>
             <p-speedDial [model]="items" direction="right"></p-speedDial>
@@ -27,12 +27,24 @@
     <div class="col">
         <div class="box">
             <p-contextMenu [global]="false" [target]="paperView" [model]="context"></p-contextMenu>
-            <canvas class="fill" #paperView resize></canvas>
+            <canvas pDroppable="components" (drop)="_drop($event)" (onDrop)="_drop($event)" class="fill" #paperView
+                resize></canvas>
         </div>
     </div>
     <div class="col-1">
         <p-knob [(ngModel)]="zoom" [min]="1" [max]="20"></p-knob>
         <p-slider [(ngModel)]="abs" [min]="-1000" [max]="1600"></p-slider>
         <p-slider [(ngModel)]="ord" orientation="vertical" [min]="-1000" [max]="1600"></p-slider>
+        <table>
+            <tr *ngFor="let element of _elements" (onDragStart)="_dragStart(element)" (onDragEnd)="_dragEnd()"
+                pDraggable="components">
+                <td>
+                    <i class="{{element.icon}}"></i>
+                </td>
+                <td>
+                    {{element.label}}
+                </td>
+            </tr>
+        </table>
     </div>
 </div>

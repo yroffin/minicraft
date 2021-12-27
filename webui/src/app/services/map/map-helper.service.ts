@@ -129,10 +129,11 @@ export class MapHelperService {
         }
       }, context.scene);
 
-      const world: MapHelperGraph = await this.loaderService.loadWorld(domainId);
+      const worldFromMxGraph = await this.loadAssetService.loadModelFromApi("");
+      console.log(worldFromMxGraph);
 
       // Draw this graph
-      this.draw(context, world);
+      this.draw(context, worldFromMxGraph);
 
       resolve(context);
     });
@@ -211,18 +212,20 @@ export class MapHelperService {
       switch (component.type) {
         case MapItemType.cube:
           meshes = [MeshBuilder.CreateBox(`${klass}-${component.id}-mesh`, {
-            size: component.size
+            size: 10,
+            width: component.width,
+            height: component.height
           }, context.scene)];
           break;
         case MapItemType.sphere:
           meshes = [MeshBuilder.CreateSphere(`${klass}-${component.id}-mesh`, {
-            diameter: component.size
+            diameter: component.width
           }, context.scene)];
           break;
         case MapItemType.cylinder:
           meshes = [MeshBuilder.CreateCylinder(`${klass}-${component.id}-mesh`, {
-            diameter: component.size,
-            height: component.size
+            diameter: component.width,
+            height: component.width
           }, context.scene)];
           break;
       }
@@ -268,7 +271,7 @@ export class MapHelperService {
 
       // Create collider
       const collider = MeshBuilder.CreateSphere(`${klass}-${component.id}`, {
-        diameter: component.size
+        diameter: component.width
       }, context.scene);
 
       // Add each mesh to collider
@@ -279,6 +282,7 @@ export class MapHelperService {
 
       // Fix position
       collider.translate(component.position, 1);
+      collider.rotate(new Vector3(1, 0, 0), Math.PI / 2, Space.WORLD);
       //collider.setPivotPoint(collider.getBoundingInfo().boundingBox.center);
 
       collider.physicsImpostor = new PhysicsImpostor(collider, PhysicsImpostor.SphereImpostor, { mass: component.weight, friction: 0.5, restitution: 0.7 }, context.scene);

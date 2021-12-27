@@ -16,6 +16,9 @@ import { SpeedDialModule } from 'primeng/speeddial';
 import { SplitterModule } from 'primeng/splitter';
 import { InputTextModule } from 'primeng/inputtext';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { DragDropModule } from 'primeng/dragdrop';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
 
 import { AnotherComponent } from './components/world/another/another.component';
 import { PaperComponent } from './components/paper/paper.component';
@@ -39,7 +42,10 @@ import { PaperComponent } from './components/paper/paper.component';
     SpeedDialModule,
     SplitterModule,
     InputTextModule,
-    ContextMenuModule
+    ContextMenuModule,
+    DragDropModule,
+    TagModule,
+    ChipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,2 +1,4 @@
 <p>another works!</p>
-<app-paper [domainId]="domainId" (flag)="select($event)" (ready)="draw($event)"></app-paper>
+<app-paper [domainId]="domainId" [elements]=elements (flag)="select($event)" (dragStart)="dragStart($event)"
+    (dragEnd)="dragEnd($event)" (dropTarget)="drop($event)" (dropCreate)="dropCreate($event)" (ready)="draw($event)">
+</app-paper>

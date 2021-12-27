@@ -8,7 +8,11 @@
       "babylonjs",
       "babylonjs-loaders"
     ],
-    "paths": {}
+    "paths": {
+      "os": [
+        "./node_modules/os-browserify"
+      ]
+    }
   },
   "files": [
     "src/main.ts",

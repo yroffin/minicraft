@@ -31,8 +31,9 @@
     "primeicons": "4.1.0",
     "primeflex": "3.1.0",
     "pako": "2.0.4",
-    "mxgraphdata": "0.1.2",
-    "paper": "0.12.15"
+    "fast-xml-parser": "4.0.0-beta.8",
+    "paper": "0.12.15",
+    "os-browserify": "0.3.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.8",

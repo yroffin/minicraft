@@ -9,6 +9,7 @@ export class MapPaperContext {
   }
 
   project!: paper.Project
+  layer!: paper.Layer
 }
 
 @Injectable({
@@ -20,12 +21,18 @@ export class MapPaperService {
     private readonly loaderService: LoaderService
   ) { }
 
-  initialize(domainId: string, project: paper.Project): Promise<MapPaperContext> {
+  initialize(domainId: string, project: paper.Project, old?: MapPaperContext): Promise<MapPaperContext> {
     return new Promise<MapPaperContext>(async (resolve) => {
       let context = new MapPaperContext();
       context.project = project;
+      context.layer = new paper.Layer({
+      });
+      context.layer.activate();
       const world: MapHelperGraph = await this.loaderService.loadWorld(domainId);
       this.draw(context, world)
+      if (old) {
+        old.layer.remove();
+      }
       resolve(context);
     })
   }
@@ -37,7 +44,7 @@ export class MapPaperService {
       _.each(world.components, (component) => {
         let rect = new paper.Path.Rectangle(
           new paper.Point(0, 0),
-          new paper.Size(component.size, component.size));
+          new paper.Size(component.width, component.width));
         rect.strokeColor = new paper.Color('black');
         rect.position.x = component.position.x;
         rect.position.y = -component.position.z;
@@ -54,7 +61,7 @@ export class MapPaperService {
       _.each(world.nodes, (node) => {
         let rect = new paper.Path.Circle(
           new paper.Point(0, 0),
-          node.size / 2);
+          node.width / 2);
         rect.strokeColor = new paper.Color('blue');
         rect.position.x = node.position.x;
         rect.position.y = -node.position.z;
@@ -87,9 +94,6 @@ export class MapPaperService {
           console.log(target);
         }
       });
-
-      // Fix center
-      //rect.center = new paper.Point(component.position.x, component.position.z);
     })();
   }
 }

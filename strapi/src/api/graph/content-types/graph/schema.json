@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "graphs",
+  "info": {
+    "singularName": "graph",
+    "pluralName": "graphs",
+    "displayName": "Graph",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "default": "Default"
+    },
+    "position": {
+      "type": "component",
+      "repeatable": false,
+      "component": "utils.vector",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "mxgraph"
+      ],
+      "required": true,
+      "default": "mxgraph"
+    },
+    "data": {
+      "type": "text",
+      "required": true
+    }
+  }
+}

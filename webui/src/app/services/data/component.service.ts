@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataStreamService } from '../data-stream.service';
 import * as _ from 'lodash';
 import { Vector3 } from 'babylonjs';
-import { MapComponent, MapItemType } from 'src/app/classes/model.class';
+import { DtoComponent, MapComponent, MapItemType } from 'src/app/classes/model.class';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class ComponentService {
   constructor(private dataStreamService: DataStreamService) {
   }
 
-  private decode(type: string): MapItemType {
+  public static decode(type: string): MapItemType {
     switch (type) {
       case "cube":
         return MapItemType.cube;
@@ -23,6 +23,30 @@ export class ComponentService {
       default:
         return MapItemType.cube;
     }
+  }
+
+  create(entity: DtoComponent): Promise<Array<MapComponent>> {
+    return new Promise<any>((resolve) => {
+      this.dataStreamService.getToken().then(() => {
+        let stringify = `{ domains: ${entity.domains}, name: "${entity.name}", type: ${entity.type}, size:${entity.size}, position: {x: ${entity.position.x}, y:${entity.position.y}, z: ${entity.position.z} }}`;
+        this.dataStreamService.graphqlWithToken(
+          `mutation {
+            createComponent(data: ${stringify}) {
+              data {
+                id
+              }
+            }
+          }
+          `
+        ).then((value) => {
+          resolve(_.flatMap<any, MapComponent>((<any>value).data.createComponent.data, (component) => {
+            return <MapComponent>{
+              id: component.id
+            };
+          }));
+        });
+      });
+    });
   }
 
   findAll(): Promise<Array<MapComponent>> {
@@ -70,9 +94,10 @@ export class ComponentService {
               id: component.id,
               uid: `component-${component.id}`,
               name: component.attributes.name,
-              size: component.attributes.size,
+              width: component.attributes.width,
+              height: component.attributes.height,
               weight: component.attributes.weight,
-              type: this.decode(component.attributes.type),
+              type: ComponentService.decode(component.attributes.type),
               domains: component.attributes.domains.data,
               position: new Vector3(
                 component.attributes.position.x,
