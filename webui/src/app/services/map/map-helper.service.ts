@@ -219,6 +219,13 @@ export class MapHelperService {
             height: component.height
           }, context.scene)];
           break;
+        case MapItemType.shape:
+          meshes = [MeshBuilder.CreateBox(`${klass}-${component.id}-mesh`, {
+            size: 10,
+            width: component.width,
+            height: component.height
+          }, context.scene)];
+          break;
         case MapItemType.sphere:
           meshes = [MeshBuilder.CreateSphere(`${klass}-${component.id}-mesh`, {
             diameter: component.width

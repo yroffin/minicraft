@@ -7,6 +7,7 @@ import { Vector3 } from 'babylonjs';
 import { MapHelperGraph } from './data/loader.service';
 import { XMLParser } from 'fast-xml-parser';
 import { MxCell, MxGeometry, MxGraphModel, MxGraphRoot, MxObject } from '../classes/mxgraph';
+import { EventHandlerVars } from '@angular/compiler/src/compiler_util/expression_converter';
 
 @Injectable({
   providedIn: 'root'
@@ -29,8 +30,6 @@ export class LoadAssetService {
         // Iterate on graph data
         let worlds = _.flatMap(domainGraph, async (graph) => {
           let model = await this.loadDrawIoFromApi(graph.data);
-          console.log(graph);
-          console.log(model);
 
           const world: MapHelperGraph = {
             components: [],
@@ -77,7 +76,7 @@ export class LoadAssetService {
                 console.error(`Cell ${_mxObject.mxCell.id} must have a value`);
                 throw `Cell ${_mxObject.mxCell.id} must have a value`;
               }
-              return this.buildNode(graph.id, _mxObject);
+              return this.buildNode(graph.id, domainId, _mxObject);
             });
 
             // Build edge
@@ -96,7 +95,7 @@ export class LoadAssetService {
               console.error(`No parent ${_component.parent} found`);
               throw `No parent ${_component.parent} found`;
             }
-            _component.holder = this.buildNode(graph.id, _mxParent[0]);
+            _component.holder = this.buildNode(graph.id, domainId, _mxParent[0]);
 
             // Distribute each element threw position
             _.each((_component.nodes), (_node) => {
@@ -126,8 +125,17 @@ export class LoadAssetService {
     });
   }
 
-  buildNode(prefix: string, _mxObject: any): MapNode {
+  buildNode(prefix: string, domainId: string, _mxObject: any): MapNode {
     let id = _mxObject.mxCell.id ? _mxObject.mxCell.id : _mxObject.id;
+    let _type: MapItemType = MapItemType.cube;
+    if (_mxObject.mxCell.style) {
+      if (_mxObject.mxCell.style.shape) {
+        _type = MapItemType.shape;
+      }
+      if (_mxObject.mxCell.style.ellipse === 0) {
+        _type = MapItemType.sphere;
+      }
+    }
     return <MapNode>{
       id: `${prefix}-${id}`,
       uid: `node-${prefix}-${id}`,
@@ -136,9 +144,9 @@ export class LoadAssetService {
       width: _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.width : 10,
       height: _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.height : 10,
       weight: 0,
-      type: MapItemType.cube,
+      type: _type,
       domains: [{
-        "id": "1"
+        "id": domainId
       }],
       position: new Vector3(
         _mxObject.mxCell.mxGeometry ? _mxObject.mxCell.mxGeometry.x : 0,
@@ -216,6 +224,19 @@ export class LoadAssetService {
   }
 
   buildMxCell(_mxCell: any): MxCell {
+    // decode style
+    let _style: any = [];
+    _.each(_mxCell['@_style'] ? _mxCell['@_style'].split(';') : [], (value) => {
+      let k = value.split('=')[0];
+      let v = value.split('=').length > 1 ? value.split('=')[1] : undefined;
+      if (k && k.length > 0) {
+        if (v) {
+          _style[k] = v;
+        } else {
+          _style[k] = 0;
+        }
+      }
+    })
     // build mxcell by gathering level 0 fields
     let mxCell: MxCell = {
       id: _mxCell['@_id'],
@@ -224,7 +245,7 @@ export class LoadAssetService {
       parent!: _mxCell['@_parent'],
       source!: _mxCell['@_source'],
       target!: _mxCell['@_target'],
-      style!: _mxCell['@_style']
+      style!: _style
     };
     // build geometry if needed
     if (_mxCell.mxGeometry) {

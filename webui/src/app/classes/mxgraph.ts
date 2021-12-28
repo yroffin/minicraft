@@ -13,7 +13,7 @@ export class MxCell {
     parent!: string
     source!: string
     target!: string
-    style!: string
+    style!: string[]
     mxGeometry?: MxGeometry
 }
 

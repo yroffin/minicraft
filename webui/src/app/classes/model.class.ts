@@ -2,6 +2,7 @@ import { Vector3 } from "babylonjs";
 
 export enum MapItemType {
     cube = "cube",
+    shape = "shape",
     sphere = "sphere",
     cylinder = "cylinder"
 }
